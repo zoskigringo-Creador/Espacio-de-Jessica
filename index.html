@@ -1,65 +1,63 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
 <title>El Espacio de Jessica</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
 <script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
-*{
-font-family:'Nunito',sans-serif;
-}
 
-html{
-overscroll-behavior-y:none;
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
 }
 
 body{
-margin:0;
-overflow-x:hidden;
-background:linear-gradient(135deg,#f8fafc,#eef2ff,#ccfbf1);
+background:linear-gradient(135deg,#f8fafc,#eef2ff,#ecfdf5);
 min-height:100vh;
+overflow-x:hidden;
 color:#334155;
-transition:.5s;
 }
 
-.dark-mode{
-background:#0f172a;
-color:white;
-}
-
-.glass{
-backdrop-filter:blur(14px);
-background:rgba(255,255,255,.7);
-border:1px solid rgba(255,255,255,.5);
-box-shadow:0 10px 30px rgba(0,0,0,.06);
-}
-
-.floaty{
+.background{
 position:fixed;
-font-size:28px;
-pointer-events:none;
-animation:floatUp linear forwards;
-opacity:.15;
+width:100%;
+height:100%;
+overflow:hidden;
+z-index:-1;
+top:0;
+left:0;
 }
 
-@keyframes floatUp{
-0%{
-transform:translateY(0);
-opacity:0;
+.float{
+position:absolute;
+opacity:.25;
+animation:float 18s infinite linear;
+font-size:22px;
 }
-10%{
-opacity:.2;
+
+@keyframes float{
+0%{
+transform:translateY(100vh) rotate(0deg);
 }
 100%{
 transform:translateY(-120vh) rotate(360deg);
-opacity:0;
 }
+}
+
+.glass{
+background:rgba(255,255,255,.75);
+backdrop-filter:blur(18px);
+border:1px solid rgba(255,255,255,.4);
+box-shadow:0 10px 35px rgba(0,0,0,.08);
 }
 
 .fade-in{
@@ -69,482 +67,558 @@ animation:fade .6s ease;
 @keyframes fade{
 from{
 opacity:0;
-transform:translateY(10px);
+transform:translateY(15px);
 }
-
 to{
 opacity:1;
 transform:translateY(0);
 }
 }
 
-.mood-selected{
-background:#4f46e5 !important;
-color:white !important;
-transform:scale(1.03);
+.entry-card{
+transition:.25s;
 }
 
-.theme-pink{
-background:linear-gradient(135deg,#ffe4e6,#fdf2f8,#faf5ff);
-}
-
-.theme-blue{
-background:linear-gradient(135deg,#dbeafe,#eef2ff,#ecfeff);
-}
-
-.theme-green{
-background:linear-gradient(135deg,#dcfce7,#ecfeff,#f0fdf4);
+.entry-card:hover{
+transform:translateY(-4px);
 }
 
 textarea{
 resize:none;
 }
+
+.mood-btn{
+transition:.2s;
+}
+
+.mood-btn:hover{
+transform:scale(1.03);
+}
+
+.hidden{
+display:none;
+}
+
 </style>
 </head>
+
 <body>
 
-<div id="floatingContainer"></div>
+<div class="background" id="background"></div>
 
-<section id="loginView" class="min-h-screen flex items-center justify-center p-6">
-<div class="glass rounded-3xl p-10 w-full max-w-md text-center fade-in">
-<div class="text-6xl mb-5">🌷</div>
-<h1 class="text-4xl font-extrabold">El Espacio de Jessica</h1>
-<p class="mt-4 text-slate-600">Tu espacio emocional privado y seguro.</p>
-<button id="googleLoginBtn" class="mt-8 w-full bg-white rounded-2xl py-4 font-bold shadow-lg hover:scale-105 transition">
+<!-- LOGIN -->
+
+<div id="loginView" class="min-h-screen flex items-center justify-center p-6">
+
+<div class="glass rounded-[30px] p-8 w-full max-w-md text-center fade-in">
+
+<div class="text-6xl mb-4">
+🌷
+</div>
+
+<h1 class="text-4xl font-bold mb-3">
+El Espacio de Jessica
+</h1>
+
+<p class="text-slate-600 mb-8">
+Tu espacio emocional privado y seguro.
+</p>
+
+<button id="googleLoginBtn"
+class="w-full bg-white rounded-2xl p-4 shadow hover:scale-[1.02] transition font-semibold flex items-center justify-center gap-3">
+
 ✨ Iniciar sesión con Google
+
 </button>
+
 </div>
-</section>
 
-<section id="appView" class="hidden p-5 md:p-8">
+</div>
 
-<div class="glass rounded-3xl p-5 mb-6 fade-in">
-<div class="flex flex-col lg:flex-row gap-4 justify-between">
+<!-- APP -->
+
+<div id="appView" class="hidden p-4 md:p-8 max-w-6xl mx-auto fade-in">
+
+<div class="glass rounded-[30px] p-6 mb-6">
+
+<div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+
 <div>
-<h1 class="text-3xl font-extrabold">🌿 El Espacio de Jessica</h1>
-<p class="mt-2">Tu progreso emocional diario.</p>
+<h1 class="text-3xl font-bold">
+🌷 El Espacio de Jessica
+</h1>
+
+<p class="text-slate-600 mt-1" id="userInfo"></p>
 </div>
 
-<div class="flex flex-wrap gap-3">
-<select id="themeSelector" class="rounded-2xl px-4 py-3 bg-white shadow-md font-bold">
-<option value="default">🎨 Tema normal</option>
-<option value="theme-pink">🌸 Rosa pastel</option>
-<option value="theme-blue">💎 Azul pastel</option>
-<option value="theme-green">🌿 Verde pastel</option>
+<div class="flex gap-3 flex-wrap">
+
+<button id="exportPdfBtn"
+class="bg-pink-500 hover:bg-pink-600 text-white px-5 py-3 rounded-2xl font-semibold transition">
+📄 PDF
+</button>
+
+<button id="exportWordBtn"
+class="bg-indigo-500 hover:bg-indigo-600 text-white px-5 py-3 rounded-2xl font-semibold transition">
+📝 Word
+</button>
+
+<button id="logoutBtn"
+class="bg-slate-700 hover:bg-slate-800 text-white px-5 py-3 rounded-2xl font-semibold transition">
+🚪 Salir
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- NUEVA ENTRADA -->
+
+<div class="glass rounded-[30px] p-6 mb-6">
+
+<h2 class="text-2xl font-bold mb-5">
+✨ Nueva entrada
+</h2>
+
+<select id="moodSelect"
+class="w-full p-4 rounded-2xl border border-slate-200 mb-4">
+
+<option value="">Selecciona una emoción</option>
+
+<option>😊 Feliz</option>
+<option>🥰 Amada</option>
+<option>😌 En paz</option>
+<option>😔 Triste</option>
+<option>😭 Muy triste</option>
+<option>😶 Vacía</option>
+<option>😰 Ansiosa</option>
+<option>😡 Enojada</option>
+<option>😣 Frustrada</option>
+<option>🥺 Sensible</option>
+<option>😴 Cansada</option>
+<option>😵 Abrumada</option>
+<option>😩 Agotada</option>
+<option>🫥 Perdida</option>
+<option>🤍 Neutral</option>
+<option>🙏 Agradecida</option>
+<option>😬 Insegura</option>
+<option>😭 Vulnerable</option>
+<option>🤩 Emocionada</option>
+<option>😶‍🌫️ Desconectada</option>
+<option>🫨 Confundida</option>
+<option>💔 Lastimada</option>
+<option>🌸 Esperanzada</option>
+<option>🧠 Reflexiva</option>
+<option>😇 Motivada</option>
+<option>🫶 Nostálgica</option>
+<option>😟 Preocupada</option>
+<option>😵‍💫 Saturada</option>
+<option>😎 Segura</option>
+<option>🌧️ Melancólica</option>
+
 </select>
 
-<button id="exportWordBtn" class="bg-indigo-500 text-white px-5 py-3 rounded-2xl font-bold">📄 Word</button>
-<button id="exportPdfBtn" class="bg-rose-500 text-white px-5 py-3 rounded-2xl font-bold">📕 PDF</button>
-<button id="logoutBtn" class="bg-slate-200 px-5 py-3 rounded-2xl font-bold">🚪 Salir</button>
-</div>
-</div>
+<textarea id="entryText"
+class="w-full p-5 rounded-2xl border border-slate-200 min-h-[150px]"
+placeholder="Escribe cómo te sientes hoy..."></textarea>
 
-<div class="mt-5 bg-white/60 rounded-2xl p-4 font-bold">
-🌸 Sesión iniciada como: <span id="userEmail"></span>
-</div>
-</div>
+<div class="flex justify-between items-center mt-4 flex-wrap gap-4">
 
-<div class="grid lg:grid-cols-2 gap-6">
+<div id="currentDate" class="text-slate-500 text-sm"></div>
 
-<div class="glass rounded-3xl p-6 fade-in">
-<h2 class="text-2xl font-extrabold mb-5">✍️ Nueva entrada</h2>
-
-<div class="relative">
-<button id="toggleMoodMenu" class="w-full bg-white rounded-2xl p-4 text-left font-bold shadow-md">
-😊 Seleccionar emoción
-</button>
-
-<div id="moodDropdown" class="hidden absolute z-50 mt-3 w-full max-h-[320px] overflow-y-auto bg-white rounded-3xl shadow-2xl p-4">
-<div class="grid grid-cols-2 gap-3" id="moodsContainer"></div>
-</div>
-</div>
-
-<textarea id="entryText" rows="8" class="w-full mt-5 rounded-3xl p-5 border border-slate-200 bg-white/80" placeholder="Escribe aquí lo que sientes..."></textarea>
-
-<button id="saveBtn" class="mt-5 w-full bg-gradient-to-r from-indigo-500 to-teal-400 text-white py-4 rounded-2xl font-extrabold shadow-lg">
+<button id="saveBtn"
+class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-2xl font-semibold transition">
 💾 Guardar entrada
 </button>
-</div>
 
-<div>
-
-<div class="glass rounded-3xl p-5 mb-6 fade-in">
-<h2 class="text-2xl font-extrabold mb-4">📈 Estadísticas emocionales</h2>
-<div id="emotionStats" class="space-y-2"></div>
-
-<div class="mt-5">
-<h3 class="font-extrabold text-lg">☁️ Clima emocional</h3>
-<div id="emotionWeather" class="mt-2"></div>
-</div>
-
-<div class="mt-5">
-<h3 class="font-extrabold text-lg">🧸 Frase motivacional</h3>
-<div id="motivationPhrase" class="italic mt-2"></div>
-</div>
-
-<div class="mt-5">
-<h3 class="font-extrabold text-lg">🧠 Resumen emocional</h3>
-<div id="aiSummary" class="mt-2"></div>
-</div>
-</div>
-
-<div class="glass rounded-3xl p-6 fade-in">
-<div class="flex flex-col md:flex-row justify-between gap-4 mb-5">
-<h2 class="text-2xl font-extrabold">📚 Historial</h2>
-<input type="date" id="dateFilter" class="bg-white rounded-2xl px-4 py-3 border">
-</div>
-
-<div id="entriesContainer" class="space-y-4 max-h-[700px] overflow-y-auto"></div>
 </div>
 
 </div>
+
+<!-- IA -->
+
+<div class="glass rounded-[30px] p-6 mb-6">
+
+<h2 class="text-2xl font-bold mb-4">
+🧠 Resumen emocional
+</h2>
+
+<p id="aiSummary" class="text-slate-600 leading-relaxed">
+Todavía no hay suficientes entradas para analizar emociones.
+</p>
+
 </div>
 
-</section>
+<!-- HISTORIAL -->
+
+<div class="glass rounded-[30px] p-6">
+
+<h2 class="text-2xl font-bold mb-5">
+📖 Historial emocional
+</h2>
+
+<div id="entriesContainer" class="space-y-4"></div>
+
+</div>
+
+</div>
 
 <script type="module">
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 import {
 getAuth,
 GoogleAuthProvider,
-signInWithPopup,
+signInWithRedirect,
+getRedirectResult,
 onAuthStateChanged,
 signOut
-} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 import {
 getFirestore,
 collection,
 addDoc,
 query,
+where,
 orderBy,
 onSnapshot,
 serverTimestamp,
+deleteDoc,
 doc,
-updateDoc,
-deleteDoc
-} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+updateDoc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
+
 apiKey: "TU_API_KEY",
 authDomain: "TU_AUTH_DOMAIN",
 projectId: "TU_PROJECT_ID",
 storageBucket: "TU_STORAGE_BUCKET",
 messagingSenderId: "TU_MESSAGING_SENDER_ID",
 appId: "TU_APP_ID"
+
 };
 
 const app = initializeApp(firebaseConfig);
+
 const auth = getAuth(app);
+
 const db = getFirestore(app);
+
 const provider = new GoogleAuthProvider();
 
-const moods = [
-"😄 Feliz","🥰 Amada","😌 En paz","😔 Triste","😢 Muy triste","😞 Vacía",
-"😰 Ansiosa","😡 Enojada","😤 Frustrada","🥺 Sensible","😴 Cansada",
-"🤯 Abrumada","🫠 Agotada","🌫️ Perdida","🤍 Neutral","🫶 Agradecida",
-"😬 Insegura","😭 Vulnerable","🥳 Emocionada","😶 Desconectada",
-"😵 Confundida","💔 Lastimada","🌸 Esperanzada","🧠 Reflexiva",
-"😇 Motivada","🥹 Nostálgica","😟 Preocupada","🤒 Saturada",
-"😎 Segura","🥲 Melancólica"
-];
+const loginView = document.getElementById("loginView");
+const appView = document.getElementById("appView");
 
-const phrases = [
-"🌸 Todo progreso emocional también es progreso.",
-"🫶 Está bien descansar.",
-"☁️ Tus emociones son válidas.",
-"🌷 Hoy también sobreviviste.",
-"✨ Cada día cuenta.",
-"🌿 Sanar toma tiempo."
-];
+const googleLoginBtn = document.getElementById("googleLoginBtn");
+const logoutBtn = document.getElementById("logoutBtn");
 
-const moodsContainer = document.getElementById('moodsContainer');
-const toggleMoodMenu = document.getElementById('toggleMoodMenu');
-const moodDropdown = document.getElementById('moodDropdown');
-const loginView = document.getElementById('loginView');
-const appView = document.getElementById('appView');
-const googleLoginBtn = document.getElementById('googleLoginBtn');
-const logoutBtn = document.getElementById('logoutBtn');
-const saveBtn = document.getElementById('saveBtn');
-const exportWordBtn = document.getElementById('exportWordBtn');
-const exportPdfBtn = document.getElementById('exportPdfBtn');
-const entryText = document.getElementById('entryText');
-const entriesContainer = document.getElementById('entriesContainer');
-const userEmail = document.getElementById('userEmail');
-const emotionStats = document.getElementById('emotionStats');
-const emotionWeather = document.getElementById('emotionWeather');
-const motivationPhrase = document.getElementById('motivationPhrase');
-const aiSummary = document.getElementById('aiSummary');
-const dateFilter = document.getElementById('dateFilter');
-const themeSelector = document.getElementById('themeSelector');
+const saveBtn = document.getElementById("saveBtn");
 
-let selectedMood = '';
-let currentEntries = [];
+const entryText = document.getElementById("entryText");
+const moodSelect = document.getElementById("moodSelect");
+
+const entriesContainer = document.getElementById("entriesContainer");
+
+const userInfo = document.getElementById("userInfo");
+
+const currentDate = document.getElementById("currentDate");
+
+const aiSummary = document.getElementById("aiSummary");
+
+const exportPdfBtn = document.getElementById("exportPdfBtn");
+const exportWordBtn = document.getElementById("exportWordBtn");
+
 let currentUser = null;
-let editingId = null;
 
-motivationPhrase.innerText = phrases[Math.floor(Math.random()*phrases.length)];
+currentDate.innerText =
+new Date().toLocaleString("es-PY");
 
-moods.forEach(mood=>{
-const btn = document.createElement('button');
-btn.className = 'bg-slate-100 rounded-2xl p-3 font-bold hover:scale-105 transition';
-btn.innerText = mood;
-btn.onclick = ()=>{
-document.querySelectorAll('#moodsContainer button').forEach(b=>b.classList.remove('mood-selected'));
-btn.classList.add('mood-selected');
-selectedMood = mood;
-toggleMoodMenu.innerText = mood;
-moodDropdown.classList.add('hidden');
-};
-moodsContainer.appendChild(btn);
+function createBackground(){
+
+const bg = document.getElementById("background");
+
+const emojis = [
+"🌸","✨","🫶","🌷","💖","☁️","🦋","🤍"
+];
+
+for(let i=0;i<40;i++){
+
+const span = document.createElement("span");
+
+span.className = "float";
+
+span.innerText =
+emojis[Math.floor(Math.random()*emojis.length)];
+
+span.style.left = Math.random()*100+"%";
+
+span.style.animationDuration =
+10 + Math.random()*20 + "s";
+
+span.style.fontSize =
+16 + Math.random()*18 + "px";
+
+bg.appendChild(span);
+
+}
+
+}
+
+createBackground();
+
+googleLoginBtn.addEventListener("click",()=>{
+
+signInWithRedirect(auth,provider);
+
 });
 
-toggleMoodMenu.onclick = ()=>{
-moodDropdown.classList.toggle('hidden');
-};
+getRedirectResult(auth)
+.then(()=>{})
+.catch((error)=>{
 
-const emojis = ['🐱','🐶','🦜','🐰','🐾','🌸','☁️'];
+alert("Error al iniciar sesión");
 
-function createFloat(){
-const el = document.createElement('div');
-el.className = 'floaty';
-el.innerText = emojis[Math.floor(Math.random()*emojis.length)];
-el.style.left = Math.random()*100+'vw';
-el.style.bottom='-50px';
-el.style.animationDuration = (10+Math.random()*10)+'s';
-document.body.appendChild(el);
-setTimeout(()=>el.remove(),20000);
-}
+console.log(error);
 
-setInterval(createFloat,1200);
-
-window.addEventListener('beforeunload', function(e){
-e.preventDefault();
-e.returnValue='';
 });
-
-setInterval(()=>{
-localStorage.setItem('autosaveText',entryText.value);
-},1000);
-
-entryText.value = localStorage.getItem('autosaveText') || '';
-
-const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-if(prefersDark.matches){
-document.body.classList.add('dark-mode');
-}
-
-themeSelector.addEventListener('change',()=>{
-document.body.classList.remove('theme-pink','theme-blue','theme-green');
-if(themeSelector.value !== 'default'){
-document.body.classList.add(themeSelector.value);
-}
-});
-
-googleLoginBtn.onclick = async()=>{
-try{
-await signInWithPopup(auth,provider);
-}catch(err){
-alert('Error al iniciar sesión');
-}
-};
-
-logoutBtn.onclick = async()=>{
-await signOut(auth);
-};
 
 onAuthStateChanged(auth,(user)=>{
+
 if(user){
+
 currentUser = user;
-userEmail.innerText = user.email;
-loginView.classList.add('hidden');
-appView.classList.remove('hidden');
+
+loginView.classList.add("hidden");
+
+appView.classList.remove("hidden");
+
+userInfo.innerHTML =
+`✨ Sesión iniciada como <b>${user.displayName}</b>`;
+
 loadEntries();
+
 }else{
-loginView.classList.remove('hidden');
-appView.classList.add('hidden');
+
+loginView.classList.remove("hidden");
+
+appView.classList.add("hidden");
+
 }
+
 });
 
-saveBtn.onclick = async()=>{
+logoutBtn.addEventListener("click",()=>{
 
-if(!selectedMood){
-alert('Selecciona una emoción');
+signOut(auth);
+
+});
+
+saveBtn.addEventListener("click",async()=>{
+
+if(!currentUser) return;
+
+const text = entryText.value.trim();
+
+const mood = moodSelect.value;
+
+if(!text && !mood){
+
+alert("Agrega una emoción o texto");
+
 return;
+
 }
 
-const now = new Date();
+await addDoc(collection(db,"entries"),{
 
-const data = {
-mood:selectedMood,
-text:entryText.value,
-date:now.toLocaleDateString(),
-time:now.toLocaleTimeString(),
-createdAt:serverTimestamp()
-};
+uid: currentUser.uid,
+text,
+mood,
+createdAt: serverTimestamp()
 
-if(editingId){
-await updateDoc(doc(db,`users/${currentUser.uid}/entries/${editingId}`),data);
-editingId = null;
-}else{
-await addDoc(collection(db,`users/${currentUser.uid}/entries`),data);
-}
+});
 
-entryText.value='';
-localStorage.removeItem('autosaveText');
-};
+entryText.value = "";
+moodSelect.value = "";
+
+});
 
 function loadEntries(){
 
 const q = query(
-collection(db,`users/${currentUser.uid}/entries`),
-orderBy('createdAt','desc')
+collection(db,"entries"),
+where("uid","==",currentUser.uid),
+orderBy("createdAt","desc")
 );
 
 onSnapshot(q,(snapshot)=>{
-currentEntries=[];
 
-snapshot.forEach(docu=>{
-currentEntries.push({
-id:docu.id,
-...docu.data()
-});
-});
+entriesContainer.innerHTML = "";
 
-renderEntries();
-});
+let moods = [];
+
+snapshot.forEach((docSnap)=>{
+
+const data = docSnap.data();
+
+if(data.mood){
+moods.push(data.mood);
 }
 
-function updateStats(){
+const div = document.createElement("div");
 
-emotionStats.innerHTML='';
+div.className =
+"entry-card bg-white rounded-3xl p-5 shadow";
 
-const counts = {};
+div.innerHTML = `
 
-currentEntries.forEach(e=>{
-counts[e.mood]=(counts[e.mood]||0)+1;
-});
+<div class="flex justify-between gap-3 flex-wrap">
 
-Object.entries(counts).slice(0,5).forEach(([mood,count])=>{
-emotionStats.innerHTML += `
-<div class="bg-white/60 rounded-2xl px-4 py-3">
-${mood} — ${count} veces
-</div>
-`;
-});
-
-const sad = currentEntries.filter(e=>String(e.mood).includes('😔') || String(e.mood).includes('😢')).length;
-
-emotionWeather.innerText = sad >= 5
-? '🌧️ Clima emocional sensible'
-: '🌤️ Clima emocional estable';
-
-aiSummary.innerText = currentEntries.length > 0
-? 'Se detecta actividad emocional constante y reflexiva en los registros recientes.'
-: 'Todavía no hay suficientes datos emocionales.';
-}
-
-function renderEntries(){
-
-entriesContainer.innerHTML='';
-
-let filtered = currentEntries;
-
-if(dateFilter.value){
-filtered = currentEntries.filter(e=>e.date.includes(dateFilter.value.split('-').reverse().join('/')));
-}
-
-filtered.forEach(entry=>{
-
-const div = document.createElement('div');
-
-div.className='bg-white/80 rounded-3xl p-5 shadow-md fade-in';
-
-div.innerHTML=`
-<div class="flex justify-between gap-4 flex-wrap mb-4">
 <div>
-<div class="font-extrabold text-lg">${entry.mood}</div>
-<div class="text-sm text-slate-500">📅 ${entry.date} ⏰ ${entry.time}</div>
+
+<div class="font-semibold text-lg mb-2">
+${data.mood || "🤍 Sin emoción"}
+</div>
+
+<div class="text-slate-600 whitespace-pre-wrap">
+${data.text || "<i>Sin texto</i>"}
+</div>
+
 </div>
 
 <div class="flex gap-2">
-<button class="editBtn bg-indigo-100 px-3 py-2 rounded-xl">✏️</button>
-<button class="deleteBtn bg-red-100 px-3 py-2 rounded-xl">🗑️</button>
-</div>
+
+<button class="editBtn bg-amber-400 hover:bg-amber-500 text-white px-4 py-2 rounded-xl">
+✏️
+</button>
+
+<button class="deleteBtn bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-xl">
+🗑️
+</button>
+
 </div>
 
-<p class="whitespace-pre-wrap">${entry.text || '<i>Sin texto</i>'}</p>
+</div>
+
 `;
 
-const editBtn = div.querySelector('.editBtn');
-const deleteBtn = div.querySelector('.deleteBtn');
-
-editBtn.onclick = ()=>{
-editingId = entry.id;
-entryText.value = entry.text;
-selectedMood = entry.mood;
-window.scrollTo({top:0,behavior:'smooth'});
-};
-
-deleteBtn.onclick = async()=>{
-if(confirm('¿Eliminar entrada?')){
-await deleteDoc(doc(db,`users/${currentUser.uid}/entries/${entry.id}`));
-}
-};
-
 entriesContainer.appendChild(div);
+
+const deleteBtn = div.querySelector(".deleteBtn");
+
+deleteBtn.addEventListener("click",async()=>{
+
+await deleteDoc(doc(db,"entries",docSnap.id));
+
 });
 
-updateStats();
+const editBtn = div.querySelector(".editBtn");
+
+editBtn.addEventListener("click",async()=>{
+
+const nuevoTexto =
+prompt("Editar texto",data.text || "");
+
+if(nuevoTexto===null) return;
+
+await updateDoc(doc(db,"entries",docSnap.id),{
+
+text:nuevoTexto
+
+});
+
+});
+
+});
+
+generateSummary(moods);
+
+});
+
 }
 
-dateFilter.addEventListener('change',renderEntries);
+function generateSummary(moods){
 
-exportWordBtn.onclick = ()=>{
-let html = '<h1>El Espacio de Jessica</h1>';
+if(moods.length===0){
 
-currentEntries.forEach(e=>{
-html += `<h2>${e.mood}</h2><p>${e.date} ${e.time}</p><p>${e.text}</p><hr>`;
+aiSummary.innerText =
+"Todavía no hay suficientes entradas.";
+
+return;
+
+}
+
+const frecuencia = {};
+
+moods.forEach(m=>{
+
+frecuencia[m] =
+(frecuencia[m] || 0)+1;
+
 });
 
-const blob = new Blob([html],{type:'application/msword'});
+const top =
+Object.entries(frecuencia)
+.sort((a,b)=>b[1]-a[1])[0];
+
+aiSummary.innerHTML =
+`🌸 Últimamente la emoción más frecuente es <b>${top[0]}</b>. Recuerda que cada emoción es válida y forma parte de tu crecimiento emocional.`;
+
+}
+
+exportPdfBtn.addEventListener("click",()=>{
+
+window.print();
+
+});
+
+exportWordBtn.addEventListener("click",()=>{
+
+const contenido =
+document.body.innerHTML;
+
+const blob = new Blob([contenido],{
+type:"application/msword"
+});
+
 const url = URL.createObjectURL(blob);
-const a = document.createElement('a');
-a.href=url;
-a.download='diario.doc';
+
+const a = document.createElement("a");
+
+a.href = url;
+
+a.download = "espacio-jessica.doc";
+
 a.click();
-};
 
-exportPdfBtn.onclick = ()=>{
-const { jsPDF } = window.jspdf;
-const pdf = new jsPDF();
-
-let y = 20;
-
-pdf.text('El Espacio de Jessica',20,y);
-y += 20;
-
-currentEntries.forEach(e=>{
-pdf.text(`${e.mood}`,20,y);
-y += 8;
-pdf.text(`${e.date} ${e.time}`,20,y);
-y += 8;
-
-const lines = pdf.splitTextToSize(e.text || 'Sin texto',170);
-pdf.text(lines,20,y);
-y += lines.length*6 + 10;
-
-if(y>260){
-pdf.addPage();
-y=20;
-}
 });
 
-pdf.save('diario.pdf');
-};
+setInterval(()=>{
+
+localStorage.setItem(
+"draftText",
+entryText.value
+);
+
+},1000);
+
+entryText.value =
+localStorage.getItem("draftText") || "";
+
+window.addEventListener("beforeunload",(e)=>{
+
+e.preventDefault();
+
+e.returnValue = "";
+
+});
 
 </script>
+
 </body>
 </html>
