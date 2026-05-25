@@ -5,11 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>El Espacio de Jessica</title>
 
-  <!-- Google Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
 
   <style>
@@ -127,9 +125,11 @@
   <div id="welcomeScreen" class="welcome-screen">
     <div class="text-center px-6">
       <div class="text-6xl mb-5">🌷</div>
+
       <h1 class="text-4xl md:text-5xl font-extrabold text-slate-700">
         Bienvenida, Jessica.
       </h1>
+
       <p class="text-xl text-slate-600 mt-4">
         Este es tu espacio seguro.
       </p>
@@ -142,6 +142,7 @@
     class="min-h-screen flex items-center justify-center p-6 relative z-10"
   >
     <div class="glass rounded-3xl p-10 w-full max-w-md text-center">
+
       <div class="text-6xl mb-6">🫶</div>
 
       <h1 class="text-4xl font-extrabold text-slate-700">
@@ -158,6 +159,7 @@
       >
         ✨ Iniciar sesión con Google
       </button>
+
     </div>
   </section>
 
@@ -166,6 +168,7 @@
     id="appView"
     class="hidden min-h-screen relative z-10"
   >
+
     <!-- HEADER -->
     <header class="p-5 md:p-8">
       <div class="glass rounded-3xl p-5 flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
@@ -246,14 +249,14 @@
             <textarea
               id="entryText"
               rows="10"
-              placeholder="Escribe aquí lo que sientes, tus pensamientos o lo que quieras liberar..."
+              placeholder="Escribe aquí lo que sientes..."
               class="w-full rounded-3xl p-5 border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-200 bg-white/80"
             ></textarea>
           </div>
 
           <button
             id="saveBtn"
-            class="mt-5 w-full bg-gradient-to-r from-indigo-500 to-teal-400 hover:scale-[1.01] text-white font-extrabold py-4 rounded-2xl transition duration-300 shadow-lg"
+            class="mt-5 w-full bg-gradient-to-r from-indigo-500 to-teal-400 text-white font-extrabold py-4 rounded-2xl transition duration-300 shadow-lg"
           >
             💾 Guardar entrada
           </button>
@@ -264,6 +267,7 @@
         <div class="glass rounded-3xl p-6">
 
           <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-5">
+
             <h2 class="text-2xl font-extrabold">
               📚 Tu progreso
             </h2>
@@ -273,22 +277,22 @@
               id="dateFilter"
               class="bg-white rounded-2xl px-4 py-3 border border-slate-200"
             />
+
           </div>
 
           <div
             id="entriesContainer"
             class="space-y-4 max-h-[700px] overflow-y-auto pr-2"
-          >
-          </div>
+          ></div>
 
         </div>
 
       </div>
 
     </main>
+
   </section>
 
-  <!-- FIREBASE -->
   <script type="module">
 
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
@@ -311,36 +315,20 @@
       serverTimestamp
     } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
-    /*
-    =====================================
-    CONFIGURA TUS CREDENCIALES FIREBASE
-    =====================================
-
+    // FIREBASE CONFIG
     const firebaseConfig = {
-      apiKey: "",
-      authDomain: "",
-      projectId: "",
-      storageBucket: "",
-      messagingSenderId: "",
-      appId: ""
+      apiKey: "AIzaSyDSOZ_PY7s67kMI8mULucVBX2bcVwwMTRg",
+      authDomain: "el-espacio-de-jessica.firebaseapp.com",
+      projectId: "el-espacio-de-jessica",
+      storageBucket: "el-espacio-de-jessica.appspot.com",
+      messagingSenderId: "1061987617949",
+      appId: "1:1061987617949:web:a71fcd08261a9eef21874"
     };
 
-    */
-
-    const firebaseConfig = {
-      apiKey: "",
-      authDomain: "",
-      projectId: "",
-      storageBucket: "",
-      messagingSenderId: "",
-      appId: ""
-    };
-
+    // INIT
     const app = initializeApp(firebaseConfig);
-
     const auth = getAuth(app);
     const db = getFirestore(app);
-
     const provider = new GoogleAuthProvider();
 
     // VIEWS
@@ -353,7 +341,7 @@
     const saveBtn = document.getElementById("saveBtn");
     const exportBtn = document.getElementById("exportBtn");
 
-    // ENTRY
+    // ENTRIES
     const entryText = document.getElementById("entryText");
     const entriesContainer = document.getElementById("entriesContainer");
     const dateFilter = document.getElementById("dateFilter");
@@ -362,10 +350,11 @@
     let currentEntries = [];
     let currentUser = null;
 
-    // Welcome Animation
+    // WELCOME
     const welcomeScreen = document.getElementById("welcomeScreen");
 
     setTimeout(() => {
+
       welcomeScreen.classList.add("smoke-out");
 
       setTimeout(() => {
@@ -374,12 +363,13 @@
 
     }, 2000);
 
-    // Floating Animals
+    // FLOATING EMOJIS
     const floatingContainer = document.getElementById("floatingContainer");
 
     const emojis = ["🐱","🐶","🦜","🐰","🐾"];
 
     function createFloatingEmoji(){
+
       const emoji = document.createElement("div");
 
       emoji.className = "floaty";
@@ -394,11 +384,12 @@
       setTimeout(() => {
         emoji.remove();
       }, 20000);
+
     }
 
     setInterval(createFloatingEmoji, 1200);
 
-    // Mood Selection
+    // MOODS
     document.querySelectorAll(".mood-option").forEach(btn => {
 
       btn.addEventListener("click", () => {
@@ -409,6 +400,7 @@
         btn.classList.add("mood-selected");
 
         selectedMood = btn.dataset.mood;
+
       });
 
     });
@@ -417,10 +409,14 @@
     googleLoginBtn.addEventListener("click", async () => {
 
       try{
+
         await signInWithPopup(auth, provider);
+
       }catch(error){
+
         console.error(error);
         alert("Error al iniciar sesión.");
+
       }
 
     });
@@ -432,7 +428,7 @@
 
     });
 
-    // AUTH STATE
+    // AUTH
     onAuthStateChanged(auth, (user) => {
 
       if(user){
@@ -466,7 +462,7 @@
       }
 
       if(!text){
-        alert("Escribe algo antes de guardar.");
+        alert("Escribe algo.");
         return;
       }
 
@@ -494,13 +490,13 @@
       }catch(error){
 
         console.error(error);
-        alert("Error al guardar la entrada.");
+        alert("Error al guardar.");
 
       }
 
     });
 
-    // LOAD ENTRIES REALTIME
+    // LOAD ENTRIES
     function loadEntries(){
 
       const q = query(
@@ -527,7 +523,7 @@
 
     }
 
-    // FILTER + RENDER
+    // RENDER
     function renderEntries(){
 
       const selectedDate = dateFilter.value;
@@ -535,9 +531,11 @@
       let filtered = currentEntries;
 
       if(selectedDate){
+
         filtered = currentEntries.filter(
           entry => entry.date === selectedDate
         );
+
       }
 
       entriesContainer.innerHTML = "";
@@ -546,11 +544,12 @@
 
         entriesContainer.innerHTML = `
           <div class="bg-white/70 rounded-3xl p-6 text-center text-slate-500">
-            🌸 No hay entradas para mostrar.
+            🌸 No hay entradas.
           </div>
         `;
 
         return;
+
       }
 
       filtered.forEach(entry => {
@@ -582,25 +581,15 @@
 
     }
 
-    // FILTER EVENT
+    // FILTER
     dateFilter.addEventListener("change", renderEntries);
 
     // EXPORT WORD
     exportBtn.addEventListener("click", () => {
 
       if(currentEntries.length === 0){
-        alert("No hay entradas para exportar.");
+        alert("No hay entradas.");
         return;
-      }
-
-      const selectedDate = dateFilter.value;
-
-      let exportEntries = currentEntries;
-
-      if(selectedDate){
-        exportEntries = currentEntries.filter(
-          entry => entry.date === selectedDate
-        );
       }
 
       let html = `
@@ -611,11 +600,10 @@
         </head>
         <body style="font-family:Arial;padding:30px;">
           <h1>El Espacio de Jessica</h1>
-          <p>Exportación de entradas del diario.</p>
           <hr/>
       `;
 
-      exportEntries.forEach(entry => {
+      currentEntries.forEach(entry => {
 
         html += `
           <div style="margin-bottom:30px;">
@@ -656,7 +644,7 @@
 
     });
 
-    // HTML ESCAPE
+    // ESCAPE HTML
     function escapeHtml(text){
 
       const div = document.createElement("div");
