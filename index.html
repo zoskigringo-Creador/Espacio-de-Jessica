@@ -1,604 +1,251 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>El Espacio de Jessica</title>
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <script src="https://cdn.tailwindcss.com"></script>
 
 <style>
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Poppins',sans-serif;
-}
-
 body{
-background:linear-gradient(135deg,#f8fafc,#eef2ff,#ecfdf5);
-min-height:100vh;
-overflow-x:hidden;
-color:#334155;
-overscroll-behavior:none;
+    margin:0;
+    overflow-x:hidden;
+    background:linear-gradient(135deg,#f8fafc,#eef2ff,#ecfdf5);
+    font-family:sans-serif;
+    min-height:100vh;
 }
 
-.background{
-position:fixed;
-width:100%;
-height:100%;
-overflow:hidden;
-z-index:-1;
-top:0;
-left:0;
+.fondo{
+    position:fixed;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    z-index:-1;
 }
 
-.float{
-position:absolute;
-opacity:.25;
-animation:float 18s infinite linear;
-font-size:22px;
-user-select:none;
-pointer-events:none;
+.flotante{
+    position:absolute;
+    font-size:28px;
+    opacity:.5;
+    animation:flotar linear infinite;
 }
 
-@keyframes float{
-0%{
-transform:translateY(100vh) rotate(0deg);
-}
-100%{
-transform:translateY(-120vh) rotate(360deg);
-}
-}
-
-.glass{
-background:rgba(255,255,255,.72);
-backdrop-filter:blur(18px);
-border:1px solid rgba(255,255,255,.4);
-box-shadow:0 10px 35px rgba(0,0,0,.08);
+@keyframes flotar{
+    from{
+        transform:translateY(100vh) rotate(0deg);
+    }
+    to{
+        transform:translateY(-120vh) rotate(360deg);
+    }
 }
 
-.fade-in{
-animation:fade .6s ease;
+.card{
+    animation:entrada .7s ease;
 }
 
-@keyframes fade{
-from{
-opacity:0;
-transform:translateY(15px);
-}
-to{
-opacity:1;
-transform:translateY(0);
-}
-}
-
-.entry-card{
-transition:.25s;
-}
-
-.entry-card:hover{
-transform:translateY(-4px);
+@keyframes entrada{
+    from{
+        opacity:0;
+        transform:translateY(20px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
 }
 
 textarea{
-resize:none;
-outline:none;
+    resize:none;
 }
 
-.hidden{
-display:none;
+.oculto{
+    display:none;
 }
-
-button{
-transition:.2s;
-}
-
-button:hover{
-transform:scale(1.02);
-}
-
-select{
-outline:none;
-}
-
 </style>
-
 </head>
 
 <body>
 
-<div class="background" id="background"></div>
+<div class="fondo" id="fondo"></div>
 
-<!-- LOGIN -->
+<div class="max-w-3xl mx-auto p-4">
 
-<div id="loginView"
-class="min-h-screen flex items-center justify-center p-6">
+<div class="bg-white rounded-3xl shadow-xl p-6 mt-6 card">
 
-<div class="glass rounded-[32px] p-8 w-full max-w-md text-center fade-in">
+<div class="text-center">
 
-<div class="text-6xl mb-4">
-🌷
-</div>
+<div class="text-6xl mb-3">🌷</div>
 
-<h1 class="text-4xl font-bold mb-3">
+<h1 class="text-4xl font-bold text-gray-700">
 El Espacio de Jessica
 </h1>
 
-<p class="text-slate-600 mb-8">
+<p class="text-gray-500 mt-2">
 Tu espacio emocional privado y seguro.
 </p>
 
-<button id="googleLoginBtn"
-class="w-full bg-white rounded-2xl p-4 shadow font-semibold flex items-center justify-center gap-3">
-
-✨ Iniciar sesión con Google
-
-</button>
-
 </div>
 
-</div>
+<div class="mt-6">
 
-<!-- APP -->
-
-<div id="appView"
-class="hidden p-4 md:p-8 max-w-6xl mx-auto fade-in">
-
-<!-- HEADER -->
-
-<div class="glass rounded-[30px] p-6 mb-6">
-
-<div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-
-<div>
-
-<h1 class="text-3xl font-bold">
-🌷 El Espacio de Jessica
-</h1>
-
-<p class="text-slate-600 mt-1" id="userInfo"></p>
-
-</div>
-
-<div class="flex gap-3 flex-wrap">
-
-<button id="exportPdfBtn"
-class="bg-pink-500 hover:bg-pink-600 text-white px-5 py-3 rounded-2xl font-semibold">
-📄 PDF
-</button>
-
-<button id="exportWordBtn"
-class="bg-indigo-500 hover:bg-indigo-600 text-white px-5 py-3 rounded-2xl font-semibold">
-📝 Word
-</button>
-
-<button id="logoutBtn"
-class="bg-slate-700 hover:bg-slate-800 text-white px-5 py-3 rounded-2xl font-semibold">
-🚪 Salir
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-<!-- NUEVA ENTRADA -->
-
-<div class="glass rounded-[30px] p-6 mb-6">
-
-<h2 class="text-2xl font-bold mb-5">
-✨ Nueva entrada
-</h2>
-
-<select id="moodSelect"
-class="w-full p-4 rounded-2xl border border-slate-200 mb-4">
-
-<option value="">Selecciona una emoción</option>
+<select id="emocion"
+class="w-full p-4 rounded-2xl border text-lg">
 
 <option>😊 Feliz</option>
 <option>🥰 Amada</option>
 <option>😌 En paz</option>
-<option>😔 Triste</option>
+<option>😢 Triste</option>
 <option>😭 Muy triste</option>
-<option>😶 Vacía</option>
+<option>😔 Vacía</option>
 <option>😰 Ansiosa</option>
 <option>😡 Enojada</option>
-<option>😣 Frustrada</option>
+<option>😩 Frustrada</option>
 <option>🥺 Sensible</option>
 <option>😴 Cansada</option>
 <option>😵 Abrumada</option>
-<option>😩 Agotada</option>
-<option>🫥 Perdida</option>
+<option>😞 Agotada</option>
+<option>🌊 Perdida</option>
 <option>🤍 Neutral</option>
 <option>🙏 Agradecida</option>
 <option>😬 Insegura</option>
-<option>😭 Vulnerable</option>
+<option>💔 Vulnerable</option>
 <option>🤩 Emocionada</option>
-<option>😶‍🌫️ Desconectada</option>
-<option>🫨 Confundida</option>
-<option>💔 Lastimada</option>
+<option>😶 Desconectada</option>
+<option>🫤 Confundida</option>
+<option>❤️ Lastimada</option>
 <option>🌸 Esperanzada</option>
 <option>🧠 Reflexiva</option>
 <option>😇 Motivada</option>
-<option>🫶 Nostálgica</option>
+<option>🌙 Nostálgica</option>
 <option>😟 Preocupada</option>
-<option>😵‍💫 Saturada</option>
+<option>😮 Saturada</option>
 <option>😎 Segura</option>
-<option>🌧️ Melancólica</option>
+<option>🍂 Melancólica</option>
 
 </select>
 
-<textarea id="entryText"
-class="w-full p-5 rounded-2xl border border-slate-200 min-h-[150px]"
-placeholder="Escribe cómo te sientes hoy..."></textarea>
+<textarea
+id="texto"
+class="w-full mt-4 p-4 rounded-2xl border h-40"
+placeholder="Escribe cómo te sientes..."
+></textarea>
 
-<div class="flex justify-between items-center mt-4 flex-wrap gap-4">
+<button
+onclick="guardarEntrada()"
+class="w-full mt-4 bg-pink-400 hover:bg-pink-500 transition text-white p-4 rounded-2xl text-lg font-bold">
+Guardar entrada 🌸
+</button>
 
-<div id="currentDate"
-class="text-slate-500 text-sm"></div>
+<div class="grid grid-cols-2 gap-3 mt-4">
 
-<button id="saveBtn"
-class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-2xl font-semibold">
+<button
+onclick="exportarTXT()"
+class="bg-indigo-400 text-white p-3 rounded-2xl">
+Exportar TXT
+</button>
 
-💾 Guardar entrada
-
+<button
+onclick="exportarJSON()"
+class="bg-emerald-400 text-white p-3 rounded-2xl">
+Exportar JSON
 </button>
 
 </div>
 
 </div>
-
-<!-- IA -->
-
-<div class="glass rounded-[30px] p-6 mb-6">
-
-<h2 class="text-2xl font-bold mb-4">
-🧠 Resumen emocional
-</h2>
-
-<p id="aiSummary"
-class="text-slate-600 leading-relaxed">
-
-Todavía no hay suficientes entradas para analizar emociones.
-
-</p>
-
 </div>
 
-<!-- HISTORIAL -->
-
-<div class="glass rounded-[30px] p-6">
-
-<h2 class="text-2xl font-bold mb-5">
-📖 Historial emocional
-</h2>
-
-<div id="entriesContainer"
-class="space-y-4"></div>
-
-</div>
+<div id="lista" class="mt-6 space-y-4"></div>
 
 </div>
 
 <script type="module">
 
-import { initializeApp }
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
-import {
-getAuth,
-GoogleAuthProvider,
-signInWithRedirect,
-getRedirectResult,
-onAuthStateChanged,
-signOut
-}
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 import {
 getFirestore,
 collection,
 addDoc,
-query,
-where,
-orderBy,
 onSnapshot,
-serverTimestamp,
 deleteDoc,
 doc,
 updateDoc
-}
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-/* =========================
-FIREBASE CONFIG
-========================= */
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
-
-apiKey: "AIzaSyDSoz_PY7s67kMI8mULucVBX2bcVwwMTRg",
-
-authDomain: "el-espacio-de-jessica.firebaseapp.com",
-
-projectId: "el-espacio-de-jessica",
-
-storageBucket: "el-espacio-de-jessica.firebasestorage.app",
-
-messagingSenderId: "1061987617949",
-
-appId: "1:1061987617949:web:28b05e0016d31308f21874",
-
-measurementId: "G-MK8B3BNWSS"
-
+  apiKey: "AIzaSyDSoz_PY7s67kMI8mULucVBX2bcVwwMTRg",
+  authDomain: "el-espacio-de-jessica.firebaseapp.com",
+  projectId: "el-espacio-de-jessica",
+  storageBucket: "el-espacio-de-jessica.firebasestorage.app",
+  messagingSenderId: "1061987617949",
+  appId: "1:1061987617949:web:28b05e0016d31308f21874",
+  measurementId: "G-MK8B3BNWSS"
 };
 
 const app = initializeApp(firebaseConfig);
 
-const auth = getAuth(app);
-
 const db = getFirestore(app);
 
-const provider = new GoogleAuthProvider();
+const lista = document.getElementById("lista");
 
-/* =========================
-ELEMENTOS
-========================= */
+window.guardarEntrada = async function(){
 
-const loginView =
-document.getElementById("loginView");
+const emocion = document.getElementById("emocion").value;
 
-const appView =
-document.getElementById("appView");
+const texto = document.getElementById("texto").value;
 
-const googleLoginBtn =
-document.getElementById("googleLoginBtn");
-
-const logoutBtn =
-document.getElementById("logoutBtn");
-
-const saveBtn =
-document.getElementById("saveBtn");
-
-const entryText =
-document.getElementById("entryText");
-
-const moodSelect =
-document.getElementById("moodSelect");
-
-const entriesContainer =
-document.getElementById("entriesContainer");
-
-const userInfo =
-document.getElementById("userInfo");
-
-const currentDate =
-document.getElementById("currentDate");
-
-const aiSummary =
-document.getElementById("aiSummary");
-
-const exportPdfBtn =
-document.getElementById("exportPdfBtn");
-
-const exportWordBtn =
-document.getElementById("exportWordBtn");
-
-let currentUser = null;
-
-/* =========================
-FECHA
-========================= */
-
-currentDate.innerText =
-new Date().toLocaleString("es-PY");
-
-/* =========================
-FONDO ANIMADO
-========================= */
-
-function createBackground(){
-
-const bg =
-document.getElementById("background");
-
-const emojis = [
-"🌸","✨","🫶","🌷",
-"💖","☁️","🦋","🤍"
-];
-
-for(let i=0;i<40;i++){
-
-const span =
-document.createElement("span");
-
-span.className = "float";
-
-span.innerText =
-emojis[Math.floor(Math.random()*emojis.length)];
-
-span.style.left =
-Math.random()*100+"%";
-
-span.style.animationDuration =
-10 + Math.random()*20 + "s";
-
-span.style.fontSize =
-16 + Math.random()*18 + "px";
-
-bg.appendChild(span);
-
-}
-
-}
-
-createBackground();
-
-/* =========================
-LOGIN
-========================= */
-
-googleLoginBtn.addEventListener("click",()=>{
-
-signInWithRedirect(auth,provider);
-
-});
-
-getRedirectResult(auth)
-.then(()=>{})
-.catch((error)=>{
-
-console.log(error);
-
-alert("Error al iniciar sesión");
-
-});
-
-/* =========================
-ESTADO LOGIN
-========================= */
-
-onAuthStateChanged(auth,(user)=>{
-
-if(user){
-
-currentUser = user;
-
-loginView.classList.add("hidden");
-
-appView.classList.remove("hidden");
-
-userInfo.innerHTML =
-`✨ Sesión iniciada como <b>${user.displayName}</b>`;
-
-loadEntries();
-
-}else{
-
-loginView.classList.remove("hidden");
-
-appView.classList.add("hidden");
-
-}
-
-});
-
-/* =========================
-LOGOUT
-========================= */
-
-logoutBtn.addEventListener("click",()=>{
-
-signOut(auth);
-
-});
-
-/* =========================
-GUARDAR
-========================= */
-
-saveBtn.addEventListener("click",async()=>{
-
-if(!currentUser) return;
-
-const text =
-entryText.value.trim();
-
-const mood =
-moodSelect.value;
-
-if(!text && !mood){
-
-alert("Agrega una emoción o texto");
-
+if(texto.trim()===""){
+alert("Escribe algo 🌸");
 return;
-
 }
 
-await addDoc(collection(db,"entries"),{
-
-uid: currentUser.uid,
-text,
-mood,
-createdAt: serverTimestamp()
-
+await addDoc(collection(db,"entradas"),{
+emocion,
+texto,
+fecha:new Date().toLocaleString()
 });
 
-entryText.value = "";
-moodSelect.value = "";
+document.getElementById("texto").value="";
 
-});
+};
 
-/* =========================
-CARGAR ENTRADAS
-========================= */
+onSnapshot(collection(db,"entradas"),(snapshot)=>{
 
-function loadEntries(){
+lista.innerHTML="";
 
-const q = query(
+snapshot.forEach((docu)=>{
 
-collection(db,"entries"),
+const data = docu.data();
 
-where("uid","==",currentUser.uid),
+lista.innerHTML += `
+<div class="bg-white rounded-3xl p-5 shadow-lg card">
 
-orderBy("createdAt","desc")
-
-);
-
-onSnapshot(q,(snapshot)=>{
-
-entriesContainer.innerHTML = "";
-
-let moods = [];
-
-snapshot.forEach((docSnap)=>{
-
-const data =
-docSnap.data();
-
-if(data.mood){
-
-moods.push(data.mood);
-
-}
-
-const div =
-document.createElement("div");
-
-div.className =
-"entry-card bg-white rounded-3xl p-5 shadow";
-
-div.innerHTML = `
-
-<div class="flex justify-between gap-3 flex-wrap">
+<div class="flex justify-between items-center">
 
 <div>
+<h2 class="text-2xl font-bold text-pink-500">
+${data.emocion}
+</h2>
 
-<div class="font-semibold text-lg mb-2">
-${data.mood || "🤍 Sin emoción"}
-</div>
-
-<div class="text-slate-600 whitespace-pre-wrap">
-${data.text || "<i>Sin texto</i>"}
-</div>
-
+<p class="text-sm text-gray-400">
+${data.fecha}
+</p>
 </div>
 
 <div class="flex gap-2">
 
-<button class="editBtn bg-amber-400 hover:bg-amber-500 text-white px-4 py-2 rounded-xl">
+<button
+onclick="editarEntrada('${docu.id}','${data.texto}')"
+class="bg-yellow-300 px-4 py-2 rounded-xl">
 ✏️
 </button>
 
-<button class="deleteBtn bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-xl">
+<button
+onclick="eliminarEntrada('${docu.id}')"
+class="bg-red-400 text-white px-4 py-2 rounded-xl">
 🗑️
 </button>
 
@@ -606,153 +253,112 @@ ${data.text || "<i>Sin texto</i>"}
 
 </div>
 
+<p class="mt-4 text-gray-700 whitespace-pre-wrap">
+${data.texto}
+</p>
+
+</div>
 `;
 
-entriesContainer.appendChild(div);
-
-/* DELETE */
-
-const deleteBtn =
-div.querySelector(".deleteBtn");
-
-deleteBtn.addEventListener("click",async()=>{
-
-await deleteDoc(
-doc(db,"entries",docSnap.id)
-);
+});
 
 });
 
-/* EDIT */
+window.eliminarEntrada = async function(id){
 
-const editBtn =
-div.querySelector(".editBtn");
+if(confirm("¿Eliminar entrada?")){
 
-editBtn.addEventListener("click",async()=>{
+await deleteDoc(doc(db,"entradas",id));
 
-const nuevoTexto =
-prompt("Editar texto",data.text || "");
-
-if(nuevoTexto===null) return;
-
-await updateDoc(
-doc(db,"entries",docSnap.id),
-{
-text:nuevoTexto
 }
-);
 
-});
+};
 
-});
+window.editarEntrada = async function(id,texto){
 
-generateSummary(moods);
+const nuevo = prompt("Editar entrada:",texto);
 
+if(nuevo!==null){
+
+await updateDoc(doc(db,"entradas",id),{
+texto:nuevo
 });
 
 }
 
-/* =========================
-IA RESUMEN
-========================= */
+};
 
-function generateSummary(moods){
+window.exportarTXT = function(){
 
-if(moods.length===0){
+let contenido = "";
 
-aiSummary.innerText =
-"Todavía no hay suficientes entradas.";
+document.querySelectorAll("#lista .bg-white").forEach(e=>{
 
-return;
-
-}
-
-const frecuencia = {};
-
-moods.forEach(m=>{
-
-frecuencia[m] =
-(frecuencia[m] || 0)+1;
+contenido += e.innerText + "\n\n";
 
 });
 
-const top =
-Object.entries(frecuencia)
-.sort((a,b)=>b[1]-a[1])[0];
+const blob = new Blob([contenido],{type:"text/plain"});
 
-aiSummary.innerHTML =
-`🌸 Últimamente la emoción más frecuente es <b>${top[0]}</b>. Cada emoción forma parte de tu crecimiento emocional.`;
+const a = document.createElement("a");
 
-}
+a.href = URL.createObjectURL(blob);
 
-/* =========================
-EXPORTAR PDF
-========================= */
-
-exportPdfBtn.addEventListener("click",()=>{
-
-window.print();
-
-});
-
-/* =========================
-EXPORTAR WORD
-========================= */
-
-exportWordBtn.addEventListener("click",()=>{
-
-const contenido =
-document.body.innerHTML;
-
-const blob = new Blob(
-[contenido],
-{
-type:"application/msword"
-}
-);
-
-const url =
-URL.createObjectURL(blob);
-
-const a =
-document.createElement("a");
-
-a.href = url;
-
-a.download =
-"espacio-jessica.doc";
+a.download = "diario.txt";
 
 a.click();
 
+};
+
+window.exportarJSON = function(){
+
+const contenido = [];
+
+document.querySelectorAll("#lista .bg-white").forEach(e=>{
+
+contenido.push(e.innerText);
+
 });
 
-/* =========================
-AUTO GUARDADO
-========================= */
-
-setInterval(()=>{
-
-localStorage.setItem(
-"draftText",
-entryText.value
+const blob = new Blob(
+[JSON.stringify(contenido,null,2)],
+{type:"application/json"}
 );
 
-},1000);
+const a = document.createElement("a");
 
-entryText.value =
-localStorage.getItem("draftText") || "";
+a.href = URL.createObjectURL(blob);
 
-/* =========================
-AVISO AL CERRAR
-========================= */
+a.download = "diario.json";
 
-window.addEventListener("beforeunload",(e)=>{
+a.click();
 
-e.preventDefault();
+};
 
-e.returnValue = "";
+const emojis = [
+"🌸","✨","🦋","💖","🌷","🤍","⭐","🍓"
+];
 
-});
+for(let i=0;i<40;i++){
+
+const span = document.createElement("span");
+
+span.className="flotante";
+
+span.innerHTML =
+emojis[Math.floor(Math.random()*emojis.length)];
+
+span.style.left=Math.random()*100+"vw";
+
+span.style.animationDuration=
+(10+Math.random()*20)+"s";
+
+span.style.fontSize=
+(20+Math.random()*25)+"px";
+
+document.getElementById("fondo").appendChild(span);
+
+}
 
 </script>
 
