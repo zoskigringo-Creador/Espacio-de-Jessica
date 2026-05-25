@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
 <title>El Espacio de Jessica</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
+
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <script src="https://cdn.tailwindcss.com"></script>
@@ -25,6 +27,7 @@ background:linear-gradient(135deg,#f8fafc,#eef2ff,#ecfdf5);
 min-height:100vh;
 overflow-x:hidden;
 color:#334155;
+overscroll-behavior:none;
 }
 
 .background{
@@ -42,6 +45,8 @@ position:absolute;
 opacity:.25;
 animation:float 18s infinite linear;
 font-size:22px;
+user-select:none;
+pointer-events:none;
 }
 
 @keyframes float{
@@ -54,7 +59,7 @@ transform:translateY(-120vh) rotate(360deg);
 }
 
 .glass{
-background:rgba(255,255,255,.75);
+background:rgba(255,255,255,.72);
 backdrop-filter:blur(18px);
 border:1px solid rgba(255,255,255,.4);
 box-shadow:0 10px 35px rgba(0,0,0,.08);
@@ -85,21 +90,27 @@ transform:translateY(-4px);
 
 textarea{
 resize:none;
-}
-
-.mood-btn{
-transition:.2s;
-}
-
-.mood-btn:hover{
-transform:scale(1.03);
+outline:none;
 }
 
 .hidden{
 display:none;
 }
 
+button{
+transition:.2s;
+}
+
+button:hover{
+transform:scale(1.02);
+}
+
+select{
+outline:none;
+}
+
 </style>
+
 </head>
 
 <body>
@@ -108,9 +119,10 @@ display:none;
 
 <!-- LOGIN -->
 
-<div id="loginView" class="min-h-screen flex items-center justify-center p-6">
+<div id="loginView"
+class="min-h-screen flex items-center justify-center p-6">
 
-<div class="glass rounded-[30px] p-8 w-full max-w-md text-center fade-in">
+<div class="glass rounded-[32px] p-8 w-full max-w-md text-center fade-in">
 
 <div class="text-6xl mb-4">
 🌷
@@ -125,7 +137,7 @@ Tu espacio emocional privado y seguro.
 </p>
 
 <button id="googleLoginBtn"
-class="w-full bg-white rounded-2xl p-4 shadow hover:scale-[1.02] transition font-semibold flex items-center justify-center gap-3">
+class="w-full bg-white rounded-2xl p-4 shadow font-semibold flex items-center justify-center gap-3">
 
 ✨ Iniciar sesión con Google
 
@@ -137,34 +149,39 @@ class="w-full bg-white rounded-2xl p-4 shadow hover:scale-[1.02] transition font
 
 <!-- APP -->
 
-<div id="appView" class="hidden p-4 md:p-8 max-w-6xl mx-auto fade-in">
+<div id="appView"
+class="hidden p-4 md:p-8 max-w-6xl mx-auto fade-in">
+
+<!-- HEADER -->
 
 <div class="glass rounded-[30px] p-6 mb-6">
 
 <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
 
 <div>
+
 <h1 class="text-3xl font-bold">
 🌷 El Espacio de Jessica
 </h1>
 
 <p class="text-slate-600 mt-1" id="userInfo"></p>
+
 </div>
 
 <div class="flex gap-3 flex-wrap">
 
 <button id="exportPdfBtn"
-class="bg-pink-500 hover:bg-pink-600 text-white px-5 py-3 rounded-2xl font-semibold transition">
+class="bg-pink-500 hover:bg-pink-600 text-white px-5 py-3 rounded-2xl font-semibold">
 📄 PDF
 </button>
 
 <button id="exportWordBtn"
-class="bg-indigo-500 hover:bg-indigo-600 text-white px-5 py-3 rounded-2xl font-semibold transition">
+class="bg-indigo-500 hover:bg-indigo-600 text-white px-5 py-3 rounded-2xl font-semibold">
 📝 Word
 </button>
 
 <button id="logoutBtn"
-class="bg-slate-700 hover:bg-slate-800 text-white px-5 py-3 rounded-2xl font-semibold transition">
+class="bg-slate-700 hover:bg-slate-800 text-white px-5 py-3 rounded-2xl font-semibold">
 🚪 Salir
 </button>
 
@@ -226,11 +243,14 @@ placeholder="Escribe cómo te sientes hoy..."></textarea>
 
 <div class="flex justify-between items-center mt-4 flex-wrap gap-4">
 
-<div id="currentDate" class="text-slate-500 text-sm"></div>
+<div id="currentDate"
+class="text-slate-500 text-sm"></div>
 
 <button id="saveBtn"
-class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-2xl font-semibold transition">
+class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-2xl font-semibold">
+
 💾 Guardar entrada
+
 </button>
 
 </div>
@@ -245,8 +265,11 @@ class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-2xl font
 🧠 Resumen emocional
 </h2>
 
-<p id="aiSummary" class="text-slate-600 leading-relaxed">
+<p id="aiSummary"
+class="text-slate-600 leading-relaxed">
+
 Todavía no hay suficientes entradas para analizar emociones.
+
 </p>
 
 </div>
@@ -259,7 +282,8 @@ Todavía no hay suficientes entradas para analizar emociones.
 📖 Historial emocional
 </h2>
 
-<div id="entriesContainer" class="space-y-4"></div>
+<div id="entriesContainer"
+class="space-y-4"></div>
 
 </div>
 
@@ -267,7 +291,8 @@ Todavía no hay suficientes entradas para analizar emociones.
 
 <script type="module">
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 import {
 getAuth,
@@ -276,7 +301,8 @@ signInWithRedirect,
 getRedirectResult,
 onAuthStateChanged,
 signOut
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 import {
 getFirestore,
@@ -290,16 +316,26 @@ serverTimestamp,
 deleteDoc,
 doc,
 updateDoc
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+/* =========================
+FIREBASE CONFIG
+========================= */
 
 const firebaseConfig = {
 
-apiKey: "TU_API_KEY",
-authDomain: "TU_AUTH_DOMAIN",
-projectId: "TU_PROJECT_ID",
-storageBucket: "TU_STORAGE_BUCKET",
-messagingSenderId: "TU_MESSAGING_SENDER_ID",
-appId: "TU_APP_ID"
+apiKey: "AIzaSyDSOz_PY7s67kMI8mULucVBX2bcVwwMTRg",
+
+authDomain: "el-espacio-de-jessica.firebaseapp.com",
+
+projectId: "el-espacio-de-jessica",
+
+storageBucket: "el-espacio-de-jessica.firebasestorage.app",
+
+messagingSenderId: "1061987617949",
+
+appId: "1:1061987617949:web:a71fcfd08261a9eef21874"
 
 };
 
@@ -311,51 +347,84 @@ const db = getFirestore(app);
 
 const provider = new GoogleAuthProvider();
 
-const loginView = document.getElementById("loginView");
-const appView = document.getElementById("appView");
+/* =========================
+ELEMENTOS
+========================= */
 
-const googleLoginBtn = document.getElementById("googleLoginBtn");
-const logoutBtn = document.getElementById("logoutBtn");
+const loginView =
+document.getElementById("loginView");
 
-const saveBtn = document.getElementById("saveBtn");
+const appView =
+document.getElementById("appView");
 
-const entryText = document.getElementById("entryText");
-const moodSelect = document.getElementById("moodSelect");
+const googleLoginBtn =
+document.getElementById("googleLoginBtn");
 
-const entriesContainer = document.getElementById("entriesContainer");
+const logoutBtn =
+document.getElementById("logoutBtn");
 
-const userInfo = document.getElementById("userInfo");
+const saveBtn =
+document.getElementById("saveBtn");
 
-const currentDate = document.getElementById("currentDate");
+const entryText =
+document.getElementById("entryText");
 
-const aiSummary = document.getElementById("aiSummary");
+const moodSelect =
+document.getElementById("moodSelect");
 
-const exportPdfBtn = document.getElementById("exportPdfBtn");
-const exportWordBtn = document.getElementById("exportWordBtn");
+const entriesContainer =
+document.getElementById("entriesContainer");
+
+const userInfo =
+document.getElementById("userInfo");
+
+const currentDate =
+document.getElementById("currentDate");
+
+const aiSummary =
+document.getElementById("aiSummary");
+
+const exportPdfBtn =
+document.getElementById("exportPdfBtn");
+
+const exportWordBtn =
+document.getElementById("exportWordBtn");
 
 let currentUser = null;
+
+/* =========================
+FECHA
+========================= */
 
 currentDate.innerText =
 new Date().toLocaleString("es-PY");
 
+/* =========================
+FONDO ANIMADO
+========================= */
+
 function createBackground(){
 
-const bg = document.getElementById("background");
+const bg =
+document.getElementById("background");
 
 const emojis = [
-"🌸","✨","🫶","🌷","💖","☁️","🦋","🤍"
+"🌸","✨","🫶","🌷",
+"💖","☁️","🦋","🤍"
 ];
 
 for(let i=0;i<40;i++){
 
-const span = document.createElement("span");
+const span =
+document.createElement("span");
 
 span.className = "float";
 
 span.innerText =
 emojis[Math.floor(Math.random()*emojis.length)];
 
-span.style.left = Math.random()*100+"%";
+span.style.left =
+Math.random()*100+"%";
 
 span.style.animationDuration =
 10 + Math.random()*20 + "s";
@@ -371,6 +440,10 @@ bg.appendChild(span);
 
 createBackground();
 
+/* =========================
+LOGIN
+========================= */
+
 googleLoginBtn.addEventListener("click",()=>{
 
 signInWithRedirect(auth,provider);
@@ -381,11 +454,15 @@ getRedirectResult(auth)
 .then(()=>{})
 .catch((error)=>{
 
-alert("Error al iniciar sesión");
-
 console.log(error);
 
+alert("Error al iniciar sesión");
+
 });
+
+/* =========================
+ESTADO LOGIN
+========================= */
 
 onAuthStateChanged(auth,(user)=>{
 
@@ -412,19 +489,29 @@ appView.classList.add("hidden");
 
 });
 
+/* =========================
+LOGOUT
+========================= */
+
 logoutBtn.addEventListener("click",()=>{
 
 signOut(auth);
 
 });
 
+/* =========================
+GUARDAR
+========================= */
+
 saveBtn.addEventListener("click",async()=>{
 
 if(!currentUser) return;
 
-const text = entryText.value.trim();
+const text =
+entryText.value.trim();
 
-const mood = moodSelect.value;
+const mood =
+moodSelect.value;
 
 if(!text && !mood){
 
@@ -448,12 +535,20 @@ moodSelect.value = "";
 
 });
 
+/* =========================
+CARGAR ENTRADAS
+========================= */
+
 function loadEntries(){
 
 const q = query(
+
 collection(db,"entries"),
+
 where("uid","==",currentUser.uid),
+
 orderBy("createdAt","desc")
+
 );
 
 onSnapshot(q,(snapshot)=>{
@@ -464,13 +559,17 @@ let moods = [];
 
 snapshot.forEach((docSnap)=>{
 
-const data = docSnap.data();
+const data =
+docSnap.data();
 
 if(data.mood){
+
 moods.push(data.mood);
+
 }
 
-const div = document.createElement("div");
+const div =
+document.createElement("div");
 
 div.className =
 "entry-card bg-white rounded-3xl p-5 shadow";
@@ -509,15 +608,23 @@ ${data.text || "<i>Sin texto</i>"}
 
 entriesContainer.appendChild(div);
 
-const deleteBtn = div.querySelector(".deleteBtn");
+/* DELETE */
+
+const deleteBtn =
+div.querySelector(".deleteBtn");
 
 deleteBtn.addEventListener("click",async()=>{
 
-await deleteDoc(doc(db,"entries",docSnap.id));
+await deleteDoc(
+doc(db,"entries",docSnap.id)
+);
 
 });
 
-const editBtn = div.querySelector(".editBtn");
+/* EDIT */
+
+const editBtn =
+div.querySelector(".editBtn");
 
 editBtn.addEventListener("click",async()=>{
 
@@ -526,11 +633,12 @@ prompt("Editar texto",data.text || "");
 
 if(nuevoTexto===null) return;
 
-await updateDoc(doc(db,"entries",docSnap.id),{
-
+await updateDoc(
+doc(db,"entries",docSnap.id),
+{
 text:nuevoTexto
-
-});
+}
+);
 
 });
 
@@ -541,6 +649,10 @@ generateSummary(moods);
 });
 
 }
+
+/* =========================
+IA RESUMEN
+========================= */
 
 function generateSummary(moods){
 
@@ -567,9 +679,13 @@ Object.entries(frecuencia)
 .sort((a,b)=>b[1]-a[1])[0];
 
 aiSummary.innerHTML =
-`🌸 Últimamente la emoción más frecuente es <b>${top[0]}</b>. Recuerda que cada emoción es válida y forma parte de tu crecimiento emocional.`;
+`🌸 Últimamente la emoción más frecuente es <b>${top[0]}</b>. Cada emoción forma parte de tu crecimiento emocional.`;
 
 }
+
+/* =========================
+EXPORTAR PDF
+========================= */
 
 exportPdfBtn.addEventListener("click",()=>{
 
@@ -577,26 +693,40 @@ window.print();
 
 });
 
+/* =========================
+EXPORTAR WORD
+========================= */
+
 exportWordBtn.addEventListener("click",()=>{
 
 const contenido =
 document.body.innerHTML;
 
-const blob = new Blob([contenido],{
+const blob = new Blob(
+[contenido],
+{
 type:"application/msword"
-});
+}
+);
 
-const url = URL.createObjectURL(blob);
+const url =
+URL.createObjectURL(blob);
 
-const a = document.createElement("a");
+const a =
+document.createElement("a");
 
 a.href = url;
 
-a.download = "espacio-jessica.doc";
+a.download =
+"espacio-jessica.doc";
 
 a.click();
 
 });
+
+/* =========================
+AUTO GUARDADO
+========================= */
 
 setInterval(()=>{
 
@@ -609,6 +739,10 @@ entryText.value
 
 entryText.value =
 localStorage.getItem("draftText") || "";
+
+/* =========================
+AVISO AL CERRAR
+========================= */
 
 window.addEventListener("beforeunload",(e)=>{
 
