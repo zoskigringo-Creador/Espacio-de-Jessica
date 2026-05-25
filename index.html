@@ -1,661 +1,704 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>El Espacio de Jessica</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<title>El Espacio de Jessica</title>
 
-  <script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 
-  <style>
-    *{
-      font-family:'Nunito',sans-serif;
-    }
+<script src="https://cdn.tailwindcss.com"></script>
 
-    body{
-      overflow-x:hidden;
-      background: linear-gradient(
-        135deg,
-        #f8fafc 0%,
-        #eef2ff 50%,
-        #ccfbf1 100%
-      );
-      min-height:100vh;
-    }
+<style>
 
-    .glass{
-      backdrop-filter: blur(16px);
-      background: rgba(255,255,255,0.65);
-      border:1px solid rgba(255,255,255,0.4);
-      box-shadow:0 10px 30px rgba(0,0,0,0.06);
-    }
+*{
+  font-family:'Nunito',sans-serif;
+}
 
-    .welcome-screen{
-      position:fixed;
-      inset:0;
-      z-index:999;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background:linear-gradient(
-        135deg,
-        #e0e7ff,
-        #ccfbf1,
-        #f8fafc
-      );
-      transition:all 1.5s ease;
-    }
+body{
+  overflow-x:hidden;
+  background:linear-gradient(
+    135deg,
+    #f8fafc 0%,
+    #eef2ff 50%,
+    #ccfbf1 100%
+  );
+  min-height:100vh;
+}
 
-    .smoke-out{
-      opacity:0;
-      filter:blur(20px);
-      transform:scale(1.2);
-      pointer-events:none;
-    }
+.glass{
+  backdrop-filter:blur(16px);
+  background:rgba(255,255,255,0.65);
+  border:1px solid rgba(255,255,255,0.4);
+  box-shadow:0 10px 30px rgba(0,0,0,0.06);
+}
 
-    .floating-container{
-      position:fixed;
-      inset:0;
-      overflow:hidden;
-      z-index:0;
-      pointer-events:none;
-    }
+.welcome-screen{
+  position:fixed;
+  inset:0;
+  z-index:999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:linear-gradient(
+    135deg,
+    #e0e7ff,
+    #ccfbf1,
+    #f8fafc
+  );
+  transition:all 1.5s ease;
+}
 
-    .floaty{
-      position:absolute;
-      bottom:-50px;
-      font-size:28px;
-      opacity:0.2;
-      animation:floatUp linear forwards;
-    }
+.smoke-out{
+  opacity:0;
+  filter:blur(20px);
+  transform:scale(1.2);
+  pointer-events:none;
+}
 
-    @keyframes floatUp{
-      0%{
-        transform:translateY(0) rotate(0deg);
-        opacity:0;
-      }
-      10%{
-        opacity:0.2;
-      }
-      100%{
-        transform:translateY(-120vh) rotate(360deg);
-        opacity:0;
-      }
-    }
+.floating-container{
+  position:fixed;
+  inset:0;
+  overflow:hidden;
+  z-index:0;
+  pointer-events:none;
+}
 
-    .mood-btn{
-      transition:all .25s ease;
-    }
+.floaty{
+  position:absolute;
+  bottom:-50px;
+  font-size:28px;
+  opacity:0.2;
+  animation:floatUp linear forwards;
+}
 
-    .mood-btn:hover{
-      transform:translateY(-2px) scale(1.02);
-    }
+@keyframes floatUp{
+  0%{
+    transform:translateY(0) rotate(0deg);
+    opacity:0;
+  }
 
-    .mood-selected{
-      background:#4f46e5 !important;
-      color:white !important;
-      transform:scale(1.03);
-      box-shadow:0 10px 20px rgba(79,70,229,0.25);
-    }
+  10%{
+    opacity:0.2;
+  }
 
-    textarea{
-      resize:none;
-    }
+  100%{
+    transform:translateY(-120vh) rotate(360deg);
+    opacity:0;
+  }
+}
 
-    ::-webkit-scrollbar{
-      width:8px;
-    }
+.mood-btn{
+  transition:all .25s ease;
+}
 
-    ::-webkit-scrollbar-thumb{
-      background:#c7d2fe;
-      border-radius:999px;
-    }
-  </style>
+.mood-btn:hover{
+  transform:translateY(-2px) scale(1.02);
+}
+
+.mood-selected{
+  background:#4f46e5 !important;
+  color:white !important;
+  transform:scale(1.03);
+  box-shadow:0 10px 20px rgba(79,70,229,0.25);
+}
+
+textarea{
+  resize:none;
+}
+
+::-webkit-scrollbar{
+  width:8px;
+}
+
+::-webkit-scrollbar-thumb{
+  background:#c7d2fe;
+  border-radius:999px;
+}
+
+</style>
 </head>
 
 <body class="text-slate-700">
 
-  <!-- Floating Animals -->
-  <div class="floating-container" id="floatingContainer"></div>
+<div class="floating-container" id="floatingContainer"></div>
 
-  <!-- Welcome Screen -->
-  <div id="welcomeScreen" class="welcome-screen">
-    <div class="text-center px-6">
-      <div class="text-6xl mb-5">🌷</div>
+<!-- BIENVENIDA -->
 
-      <h1 class="text-4xl md:text-5xl font-extrabold text-slate-700">
-        Bienvenida, Jessica.
-      </h1>
+<div id="welcomeScreen" class="welcome-screen">
 
-      <p class="text-xl text-slate-600 mt-4">
-        Este es tu espacio seguro.
-      </p>
-    </div>
+  <div class="text-center px-6">
+
+    <div class="text-6xl mb-5">🌷</div>
+
+    <h1 class="text-4xl md:text-5xl font-extrabold text-slate-700">
+      Bienvenida, Jessica.
+    </h1>
+
+    <p class="text-xl text-slate-600 mt-4">
+      Este es tu espacio seguro.
+    </p>
+
   </div>
 
-  <!-- LOGIN -->
-  <section
-    id="loginView"
-    class="min-h-screen flex items-center justify-center p-6 relative z-10"
-  >
-    <div class="glass rounded-3xl p-10 w-full max-w-md text-center">
+</div>
 
-      <div class="text-6xl mb-6">🫶</div>
+<!-- LOGIN -->
 
-      <h1 class="text-4xl font-extrabold text-slate-700">
-        El Espacio de Jessica
-      </h1>
+<section
+id="loginView"
+class="min-h-screen flex items-center justify-center p-6 relative z-10">
 
-      <p class="mt-4 text-slate-600">
-        Un lugar privado para expresar pensamientos, emociones y progreso personal.
-      </p>
+<div class="glass rounded-3xl p-10 w-full max-w-md text-center">
 
-      <button
-        id="googleLoginBtn"
-        class="mt-8 w-full bg-white hover:bg-slate-50 border border-slate-200 rounded-2xl py-4 px-6 font-bold text-slate-700 transition duration-300 shadow-md hover:shadow-xl"
-      >
-        ✨ Iniciar sesión con Google
+  <div class="text-6xl mb-6">🫶</div>
+
+  <h1 class="text-4xl font-extrabold text-slate-700">
+    El Espacio de Jessica
+  </h1>
+
+  <p class="mt-4 text-slate-600">
+    Un lugar privado para expresar pensamientos, emociones y progreso personal.
+  </p>
+
+  <button
+  id="googleLoginBtn"
+  class="mt-8 w-full bg-white hover:bg-slate-50 border border-slate-200 rounded-2xl py-4 px-6 font-bold text-slate-700 transition duration-300 shadow-md hover:shadow-xl">
+
+    ✨ Iniciar sesión con Google
+
+  </button>
+
+</div>
+</section>
+
+<!-- APP -->
+
+<section
+id="appView"
+class="hidden min-h-screen relative z-10">
+
+<header class="p-5 md:p-8">
+
+<div class="glass rounded-3xl p-5 flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
+
+  <div>
+
+    <h1 class="text-3xl font-extrabold text-slate-700">
+      🌿 El Espacio de Jessica
+    </h1>
+
+    <p class="text-slate-600 mt-1">
+      Tu progreso emocional y pensamientos diarios.
+    </p>
+
+  </div>
+
+  <div class="flex flex-wrap gap-3">
+
+    <button
+    id="exportBtn"
+    class="bg-indigo-500 hover:bg-indigo-600 text-white px-5 py-3 rounded-2xl font-bold transition">
+
+      📄 Exportar Word
+
+    </button>
+
+    <button
+    id="logoutBtn"
+    class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-5 py-3 rounded-2xl font-bold transition">
+
+      🚪 Cerrar sesión
+
+    </button>
+
+  </div>
+
+</div>
+</header>
+
+<main class="px-5 md:px-8 pb-10">
+
+<div class="grid lg:grid-cols-2 gap-8">
+
+<!-- NUEVA ENTRADA -->
+
+<div class="glass rounded-3xl p-6">
+
+  <h2 class="text-2xl font-extrabold mb-5">
+    ✍️ Nueva entrada
+  </h2>
+
+  <div>
+
+    <p class="font-bold mb-3 text-slate-600">
+      ¿Cómo te sientes hoy?
+    </p>
+
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+
+      <button class="mood-btn mood-option bg-white rounded-2xl p-3 font-bold" data-mood="Feliz 😊">
+        Feliz 😊
+      </button>
+
+      <button class="mood-btn mood-option bg-white rounded-2xl p-3 font-bold" data-mood="Tranquila 😌">
+        Tranquila 😌
+      </button>
+
+      <button class="mood-btn mood-option bg-white rounded-2xl p-3 font-bold" data-mood="Poco triste 😔">
+        Poco triste 😔
+      </button>
+
+      <button class="mood-btn mood-option bg-white rounded-2xl p-3 font-bold" data-mood="Insuficiente 🌫️">
+        Insuficiente 🌫️
+      </button>
+
+      <button class="mood-btn mood-option bg-white rounded-2xl p-3 font-bold col-span-2 md:col-span-1" data-mood="Ansiosa 😰">
+        Ansiosa 😰
       </button>
 
     </div>
-  </section>
 
-  <!-- APP -->
-  <section
-    id="appView"
-    class="hidden min-h-screen relative z-10"
-  >
+  </div>
 
-    <!-- HEADER -->
-    <header class="p-5 md:p-8">
-      <div class="glass rounded-3xl p-5 flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
+  <div class="mt-6">
 
-        <div>
-          <h1 class="text-3xl font-extrabold text-slate-700">
-            🌿 El Espacio de Jessica
-          </h1>
+    <textarea
+    id="entryText"
+    rows="10"
+    placeholder="Escribe aquí lo que sientes..."
+    class="w-full rounded-3xl p-5 border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-200 bg-white/80"></textarea>
 
-          <p class="text-slate-600 mt-1">
-            Tu progreso emocional y pensamientos diarios.
-          </p>
-        </div>
+  </div>
 
-        <div class="flex flex-wrap gap-3">
+  <button
+  id="saveBtn"
+  class="mt-5 w-full bg-gradient-to-r from-indigo-500 to-teal-400 text-white font-extrabold py-4 rounded-2xl transition duration-300 shadow-lg">
 
-          <button
-            id="exportBtn"
-            class="bg-indigo-500 hover:bg-indigo-600 text-white px-5 py-3 rounded-2xl font-bold transition"
-          >
-            📄 Exportar Word
-          </button>
+    💾 Guardar entrada
 
-          <button
-            id="logoutBtn"
-            class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-5 py-3 rounded-2xl font-bold transition"
-          >
-            🚪 Cerrar sesión
-          </button>
+  </button>
 
-        </div>
+</div>
+
+<!-- HISTORIAL -->
+
+<div class="glass rounded-3xl p-6">
+
+<div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-5">
+
+  <h2 class="text-2xl font-extrabold">
+    📚 Tu progreso
+  </h2>
+
+  <input
+  type="date"
+  id="dateFilter"
+  class="bg-white rounded-2xl px-4 py-3 border border-slate-200">
+
+</div>
+
+<div
+id="entriesContainer"
+class="space-y-4 max-h-[700px] overflow-y-auto pr-2"></div>
+
+</div>
+
+</div>
+</main>
+</section>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  query,
+  orderBy,
+  onSnapshot,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+
+// FIREBASE CONFIG
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDSoz_PY7s67kMI8mULucVBX2bcVwwMTRg",
+  authDomain: "el-espacio-de-jessica.firebaseapp.com",
+  projectId: "el-espacio-de-jessica",
+  storageBucket: "el-espacio-de-jessica.appspot.com",
+  messagingSenderId: "1061987617949",
+  appId: "1:1061987617949:web:a71fcfd08261a9eef21874",
+  measurementId: "G-QPPSE7D5XL"
+};
+
+// INIT
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const provider = new GoogleAuthProvider();
+
+// VIEWS
+
+const loginView = document.getElementById("loginView");
+const appView = document.getElementById("appView");
+
+// BUTTONS
+
+const googleLoginBtn = document.getElementById("googleLoginBtn");
+const logoutBtn = document.getElementById("logoutBtn");
+const saveBtn = document.getElementById("saveBtn");
+const exportBtn = document.getElementById("exportBtn");
+
+// ENTRIES
+
+const entryText = document.getElementById("entryText");
+const entriesContainer = document.getElementById("entriesContainer");
+const dateFilter = document.getElementById("dateFilter");
+
+let selectedMood = "";
+let currentEntries = [];
+let currentUser = null;
+
+// WELCOME
+
+const welcomeScreen = document.getElementById("welcomeScreen");
+
+setTimeout(() => {
+
+  welcomeScreen.classList.add("smoke-out");
+
+  setTimeout(() => {
+    welcomeScreen.remove();
+  },1500);
+
+},2000);
+
+// FLOATING
+
+const floatingContainer = document.getElementById("floatingContainer");
+
+const emojis = ["🐱","🐶","🦜","🐰","🐾"];
+
+function createFloatingEmoji(){
+
+  const emoji = document.createElement("div");
+
+  emoji.className = "floaty";
+
+  emoji.innerText =
+    emojis[Math.floor(Math.random() * emojis.length)];
+
+  emoji.style.left = Math.random() * 100 + "vw";
+
+  emoji.style.animationDuration =
+    (10 + Math.random() * 10) + "s";
+
+  emoji.style.fontSize =
+    (20 + Math.random() * 20) + "px";
+
+  floatingContainer.appendChild(emoji);
+
+  setTimeout(() => {
+    emoji.remove();
+  },20000);
+
+}
+
+setInterval(createFloatingEmoji,1200);
+
+// MOODS
+
+document.querySelectorAll(".mood-option").forEach(btn => {
+
+  btn.addEventListener("click", () => {
+
+    document.querySelectorAll(".mood-option")
+      .forEach(b => b.classList.remove("mood-selected"));
+
+    btn.classList.add("mood-selected");
+
+    selectedMood = btn.dataset.mood;
+
+  });
+
+});
+
+// LOGIN
+
+googleLoginBtn.addEventListener("click", async () => {
+
+  try{
+
+    await signInWithPopup(auth, provider);
+
+  }catch(error){
+
+    console.error(error);
+    alert("Error al iniciar sesión");
+
+  }
+
+});
+
+// LOGOUT
+
+logoutBtn.addEventListener("click", async () => {
+
+  await signOut(auth);
+
+});
+
+// AUTH
+
+onAuthStateChanged(auth, (user) => {
+
+  if(user){
+
+    currentUser = user;
+
+    loginView.classList.add("hidden");
+    appView.classList.remove("hidden");
+
+    loadEntries();
+
+  }else{
+
+    currentUser = null;
+
+    loginView.classList.remove("hidden");
+    appView.classList.add("hidden");
+
+  }
+
+});
+
+// SAVE
+
+saveBtn.addEventListener("click", async () => {
+
+  const text = entryText.value.trim();
+
+  if(!selectedMood){
+    alert("Selecciona un estado de ánimo");
+    return;
+  }
+
+  if(!text){
+    alert("Escribe algo");
+    return;
+  }
+
+  try{
+
+    const now = new Date();
+
+    await addDoc(
+      collection(db, `users/${currentUser.uid}/entries`),
+      {
+        mood:selectedMood,
+        text:text,
+        date:now.toISOString().split("T")[0],
+        createdAt:serverTimestamp()
+      }
+    );
+
+    entryText.value = "";
+
+    document.querySelectorAll(".mood-option")
+      .forEach(b => b.classList.remove("mood-selected"));
+
+    selectedMood = "";
+
+  }catch(error){
+
+    console.error(error);
+    alert("Error al guardar");
+
+  }
+
+});
+
+// LOAD
+
+function loadEntries(){
+
+  const q = query(
+    collection(db, `users/${currentUser.uid}/entries`),
+    orderBy("createdAt","desc")
+  );
+
+  onSnapshot(q, (snapshot) => {
+
+    currentEntries = [];
+
+    snapshot.forEach(doc => {
+
+      currentEntries.push({
+        id:doc.id,
+        ...doc.data()
+      });
+
+    });
+
+    renderEntries();
+
+  });
+
+}
+
+// RENDER
+
+function renderEntries(){
+
+  const selectedDate = dateFilter.value;
+
+  let filtered = currentEntries;
+
+  if(selectedDate){
+
+    filtered = currentEntries.filter(
+      entry => entry.date === selectedDate
+    );
+
+  }
+
+  entriesContainer.innerHTML = "";
+
+  if(filtered.length === 0){
+
+    entriesContainer.innerHTML = `
+      <div class="bg-white/70 rounded-3xl p-6 text-center text-slate-500">
+        🌸 No hay entradas.
       </div>
-    </header>
+    `;
 
-    <!-- MAIN -->
-    <main class="px-5 md:px-8 pb-10">
+    return;
 
-      <div class="grid lg:grid-cols-2 gap-8">
+  }
 
-        <!-- NEW ENTRY -->
-        <div class="glass rounded-3xl p-6">
+  filtered.forEach(entry => {
 
-          <h2 class="text-2xl font-extrabold mb-5">
-            ✍️ Nueva entrada
-          </h2>
+    const div = document.createElement("div");
 
-          <div>
-            <p class="font-bold mb-3 text-slate-600">
-              ¿Cómo te sientes hoy?
-            </p>
+    div.className =
+      "bg-white/80 rounded-3xl p-5 border border-white shadow-sm";
 
-            <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+    div.innerHTML = `
+      <div class="flex justify-between items-start gap-4 mb-3">
 
-              <button class="mood-btn mood-option bg-white rounded-2xl p-3 font-bold" data-mood="Feliz 😊">
-                Feliz 😊
-              </button>
-
-              <button class="mood-btn mood-option bg-white rounded-2xl p-3 font-bold" data-mood="Tranquila 😌">
-                Tranquila 😌
-              </button>
-
-              <button class="mood-btn mood-option bg-white rounded-2xl p-3 font-bold" data-mood="Poco triste 😔">
-                Poco triste 😔
-              </button>
-
-              <button class="mood-btn mood-option bg-white rounded-2xl p-3 font-bold" data-mood="Insuficiente 🌫️">
-                Insuficiente 🌫️
-              </button>
-
-              <button class="mood-btn mood-option bg-white rounded-2xl p-3 font-bold col-span-2 md:col-span-1" data-mood="Ansiosa 😰">
-                Ansiosa 😰
-              </button>
-
-            </div>
-          </div>
-
-          <div class="mt-6">
-            <textarea
-              id="entryText"
-              rows="10"
-              placeholder="Escribe aquí lo que sientes..."
-              class="w-full rounded-3xl p-5 border border-slate-200 focus:outline-none focus:ring-4 focus:ring-indigo-200 bg-white/80"
-            ></textarea>
-          </div>
-
-          <button
-            id="saveBtn"
-            class="mt-5 w-full bg-gradient-to-r from-indigo-500 to-teal-400 text-white font-extrabold py-4 rounded-2xl transition duration-300 shadow-lg"
-          >
-            💾 Guardar entrada
-          </button>
-
+        <div class="font-extrabold text-lg">
+          ${entry.mood}
         </div>
 
-        <!-- HISTORY -->
-        <div class="glass rounded-3xl p-6">
-
-          <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-5">
-
-            <h2 class="text-2xl font-extrabold">
-              📚 Tu progreso
-            </h2>
-
-            <input
-              type="date"
-              id="dateFilter"
-              class="bg-white rounded-2xl px-4 py-3 border border-slate-200"
-            />
-
-          </div>
-
-          <div
-            id="entriesContainer"
-            class="space-y-4 max-h-[700px] overflow-y-auto pr-2"
-          ></div>
-
+        <div class="text-sm text-slate-500">
+          ${entry.date || ""}
         </div>
 
       </div>
 
-    </main>
+      <p class="whitespace-pre-wrap leading-relaxed text-slate-700">
+        ${escapeHtml(entry.text)}
+      </p>
+    `;
 
-  </section>
+    entriesContainer.appendChild(div);
 
-  <script type="module">
+  });
 
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+}
 
-    import {
-      getAuth,
-      GoogleAuthProvider,
-      signInWithPopup,
-      onAuthStateChanged,
-      signOut
-    } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+// FILTER
 
-    import {
-      getFirestore,
-      collection,
-      addDoc,
-      query,
-      orderBy,
-      onSnapshot,
-      serverTimestamp
-    } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+dateFilter.addEventListener("change", renderEntries);
 
-    // FIREBASE CONFIG
-    const firebaseConfig = {
-      apiKey: "AIzaSyDSOZ_PY7s67kMI8mULucVBX2bcVwwMTRg",
-      authDomain: "el-espacio-de-jessica.firebaseapp.com",
-      projectId: "el-espacio-de-jessica",
-      storageBucket: "el-espacio-de-jessica.appspot.com",
-      messagingSenderId: "1061987617949",
-      appId: "1:1061987617949:web:a71fcd08261a9eef21874"
-    };
+// EXPORT
 
-    // INIT
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-    const provider = new GoogleAuthProvider();
+exportBtn.addEventListener("click", () => {
 
-    // VIEWS
-    const loginView = document.getElementById("loginView");
-    const appView = document.getElementById("appView");
+  if(currentEntries.length === 0){
+    alert("No hay entradas");
+    return;
+  }
 
-    // BUTTONS
-    const googleLoginBtn = document.getElementById("googleLoginBtn");
-    const logoutBtn = document.getElementById("logoutBtn");
-    const saveBtn = document.getElementById("saveBtn");
-    const exportBtn = document.getElementById("exportBtn");
+  let html = `
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <title>El Espacio de Jessica</title>
+    </head>
+    <body style="font-family:Arial;padding:30px;">
+      <h1>El Espacio de Jessica</h1>
+      <hr/>
+  `;
 
-    // ENTRIES
-    const entryText = document.getElementById("entryText");
-    const entriesContainer = document.getElementById("entriesContainer");
-    const dateFilter = document.getElementById("dateFilter");
+  currentEntries.forEach(entry => {
 
-    let selectedMood = "";
-    let currentEntries = [];
-    let currentUser = null;
+    html += `
+      <div style="margin-bottom:30px;">
+        <h2>${entry.mood}</h2>
+        <p><strong>Fecha:</strong> ${entry.date}</p>
+        <p style="white-space:pre-wrap;">
+          ${entry.text}
+        </p>
+      </div>
+    `;
 
-    // WELCOME
-    const welcomeScreen = document.getElementById("welcomeScreen");
+  });
 
-    setTimeout(() => {
+  html += `
+    </body>
+    </html>
+  `;
 
-      welcomeScreen.classList.add("smoke-out");
+  const blob = new Blob(
+    [html],
+    {type:"application/msword"}
+  );
 
-      setTimeout(() => {
-        welcomeScreen.remove();
-      }, 1500);
+  const url = URL.createObjectURL(blob);
 
-    }, 2000);
+  const a = document.createElement("a");
 
-    // FLOATING EMOJIS
-    const floatingContainer = document.getElementById("floatingContainer");
+  a.href = url;
+  a.download = "El_Espacio_de_Jessica.doc";
 
-    const emojis = ["🐱","🐶","🦜","🐰","🐾"];
+  document.body.appendChild(a);
 
-    function createFloatingEmoji(){
+  a.click();
 
-      const emoji = document.createElement("div");
+  document.body.removeChild(a);
 
-      emoji.className = "floaty";
-      emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+  URL.revokeObjectURL(url);
 
-      emoji.style.left = Math.random() * 100 + "vw";
-      emoji.style.animationDuration = (10 + Math.random() * 10) + "s";
-      emoji.style.fontSize = (20 + Math.random() * 20) + "px";
+});
 
-      floatingContainer.appendChild(emoji);
+// ESCAPE
 
-      setTimeout(() => {
-        emoji.remove();
-      }, 20000);
+function escapeHtml(text){
 
-    }
+  const div = document.createElement("div");
 
-    setInterval(createFloatingEmoji, 1200);
+  div.innerText = text;
 
-    // MOODS
-    document.querySelectorAll(".mood-option").forEach(btn => {
+  return div.innerHTML;
 
-      btn.addEventListener("click", () => {
+}
 
-        document.querySelectorAll(".mood-option")
-          .forEach(b => b.classList.remove("mood-selected"));
-
-        btn.classList.add("mood-selected");
-
-        selectedMood = btn.dataset.mood;
-
-      });
-
-    });
-
-    // LOGIN
-    googleLoginBtn.addEventListener("click", async () => {
-
-      try{
-
-        await signInWithPopup(auth, provider);
-
-      }catch(error){
-
-        console.error(error);
-        alert("Error al iniciar sesión.");
-
-      }
-
-    });
-
-    // LOGOUT
-    logoutBtn.addEventListener("click", async () => {
-
-      await signOut(auth);
-
-    });
-
-    // AUTH
-    onAuthStateChanged(auth, (user) => {
-
-      if(user){
-
-        currentUser = user;
-
-        loginView.classList.add("hidden");
-        appView.classList.remove("hidden");
-
-        loadEntries();
-
-      }else{
-
-        currentUser = null;
-
-        loginView.classList.remove("hidden");
-        appView.classList.add("hidden");
-
-      }
-
-    });
-
-    // SAVE ENTRY
-    saveBtn.addEventListener("click", async () => {
-
-      const text = entryText.value.trim();
-
-      if(!selectedMood){
-        alert("Selecciona un estado de ánimo.");
-        return;
-      }
-
-      if(!text){
-        alert("Escribe algo.");
-        return;
-      }
-
-      try{
-
-        const now = new Date();
-
-        await addDoc(
-          collection(db, `users/${currentUser.uid}/entries`),
-          {
-            mood: selectedMood,
-            text,
-            date: now.toISOString().split("T")[0],
-            createdAt: serverTimestamp()
-          }
-        );
-
-        entryText.value = "";
-
-        document.querySelectorAll(".mood-option")
-          .forEach(b => b.classList.remove("mood-selected"));
-
-        selectedMood = "";
-
-      }catch(error){
-
-        console.error(error);
-        alert("Error al guardar.");
-
-      }
-
-    });
-
-    // LOAD ENTRIES
-    function loadEntries(){
-
-      const q = query(
-        collection(db, `users/${currentUser.uid}/entries`),
-        orderBy("createdAt","desc")
-      );
-
-      onSnapshot(q, (snapshot) => {
-
-        currentEntries = [];
-
-        snapshot.forEach(doc => {
-
-          currentEntries.push({
-            id: doc.id,
-            ...doc.data()
-          });
-
-        });
-
-        renderEntries();
-
-      });
-
-    }
-
-    // RENDER
-    function renderEntries(){
-
-      const selectedDate = dateFilter.value;
-
-      let filtered = currentEntries;
-
-      if(selectedDate){
-
-        filtered = currentEntries.filter(
-          entry => entry.date === selectedDate
-        );
-
-      }
-
-      entriesContainer.innerHTML = "";
-
-      if(filtered.length === 0){
-
-        entriesContainer.innerHTML = `
-          <div class="bg-white/70 rounded-3xl p-6 text-center text-slate-500">
-            🌸 No hay entradas.
-          </div>
-        `;
-
-        return;
-
-      }
-
-      filtered.forEach(entry => {
-
-        const div = document.createElement("div");
-
-        div.className =
-          "bg-white/80 rounded-3xl p-5 border border-white shadow-sm";
-
-        div.innerHTML = `
-          <div class="flex justify-between items-start gap-4 mb-3">
-            <div class="font-extrabold text-lg">
-              ${entry.mood}
-            </div>
-
-            <div class="text-sm text-slate-500">
-              ${entry.date || ""}
-            </div>
-          </div>
-
-          <p class="whitespace-pre-wrap leading-relaxed text-slate-700">
-            ${escapeHtml(entry.text)}
-          </p>
-        `;
-
-        entriesContainer.appendChild(div);
-
-      });
-
-    }
-
-    // FILTER
-    dateFilter.addEventListener("change", renderEntries);
-
-    // EXPORT WORD
-    exportBtn.addEventListener("click", () => {
-
-      if(currentEntries.length === 0){
-        alert("No hay entradas.");
-        return;
-      }
-
-      let html = `
-        <html>
-        <head>
-          <meta charset="UTF-8">
-          <title>El Espacio de Jessica</title>
-        </head>
-        <body style="font-family:Arial;padding:30px;">
-          <h1>El Espacio de Jessica</h1>
-          <hr/>
-      `;
-
-      currentEntries.forEach(entry => {
-
-        html += `
-          <div style="margin-bottom:30px;">
-            <h2>${entry.mood}</h2>
-            <p><strong>Fecha:</strong> ${entry.date}</p>
-            <p style="white-space:pre-wrap;">
-              ${entry.text}
-            </p>
-          </div>
-        `;
-
-      });
-
-      html += `
-        </body>
-        </html>
-      `;
-
-      const blob = new Blob(
-        [html],
-        { type: "application/msword" }
-      );
-
-      const url = URL.createObjectURL(blob);
-
-      const a = document.createElement("a");
-
-      a.href = url;
-      a.download = "El_Espacio_de_Jessica.doc";
-
-      document.body.appendChild(a);
-
-      a.click();
-
-      document.body.removeChild(a);
-
-      URL.revokeObjectURL(url);
-
-    });
-
-    // ESCAPE HTML
-    function escapeHtml(text){
-
-      const div = document.createElement("div");
-
-      div.innerText = text;
-
-      return div.innerHTML;
-
-    }
-
-  </script>
+</script>
 
 </body>
 </html>
