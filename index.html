@@ -2,8 +2,8 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Meta tags para bloquear el modo oscuro -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- Meta tags para bloquear el modo oscuro del navegador -->
     <meta name="color-scheme" content="light only">
     <meta name="darkreader-lock">
     <title>El Espacio de Jessica 🌸</title>
@@ -19,32 +19,40 @@
 
     <script>
         tailwind.config = {
+            darkMode: 'class', // Forzamos a que el modo oscuro sea manual (nunca se activará)
             theme: {
                 extend: {
-                    fontFamily: { sans: ['Nunito', 'sans-serif'] }
+                    fontFamily: { sans: ['Nunito', 'sans-serif'] },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
                 }
             }
         }
     </script>
 
     <style>
-        /* ARMADURA CONTRA EL MODO OSCURO: Forzamos el fondo claro */
+        /* ARMADURA CONTRA EL MODO OSCURO */
+        :root {
+            color-scheme: light;
+        }
         html, body {
             margin: 0;
             overflow-x: hidden;
             background-color: #fdf2f8 !important; 
             min-height: 100vh;
+            color: #374151 !important;
         }
 
-        /* Fondo de gradiente animado protegido */
+        /* Fondo animado relajante */
         .capa-fondo {
             position: fixed;
             top: 0; left: 0;
             width: 100vw;
             height: 100vh;
-            background: linear-gradient(-45deg, #fdf2f8, #e0f2fe, #f3e8ff, #ecfdf5) !important;
+            background: linear-gradient(-45deg, #fdf2f8, #e0f2fe, #fce7f3, #ecfdf5) !important;
             background-size: 400% 400% !important;
-            animation: gradientBG 15s ease infinite !important;
+            animation: gradientBG 20s ease infinite !important;
             z-index: -2;
         }
 
@@ -67,36 +75,53 @@
 
         .flotante {
             position: absolute;
-            opacity: 0.4;
+            opacity: 0.3;
             will-change: transform;
             animation: flotar linear infinite;
-            filter: drop-shadow(0 0 5px rgba(255,255,255,0.8));
+            filter: drop-shadow(0 0 8px rgba(255,255,255,0.9));
         }
 
         @keyframes flotar {
-            0% { transform: translateY(110vh) rotate(0deg); }
-            100% { transform: translateY(-20vh) rotate(360deg); }
+            0% { transform: translateY(110vh) rotate(0deg) scale(0.8); }
+            50% { transform: translateY(40vh) rotate(180deg) scale(1.1); }
+            100% { transform: translateY(-20vh) rotate(360deg) scale(0.8); }
         }
 
-        /* Efectos visuales */
-        .fade-in { animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+        /* Efectos visuales y transiciones */
+        .fade-in { animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1); }
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         .glass-card {
-            background: rgba(255, 255, 255, 0.85) !important;
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            box-shadow: 0 10px 40px -10px rgba(0,0,0,0.08);
-            color: #374151 !important; /* Forzar texto oscuro en tarjetas */
+            background: rgba(255, 255, 255, 0.9) !important;
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 1);
+            box-shadow: 0 10px 40px -10px rgba(236, 72, 153, 0.15);
+        }
+
+        /* Tarjetas de Clima y Fecha blindadas */
+        .info-card {
+            background-color: #ffffff !important;
+            color: #374151 !important;
+            border-radius: 1.5rem;
+            padding: 1.25rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+        .info-card:hover {
+            transform: translateY(-2px);
         }
 
         textarea { resize: vertical; min-height: 120px; }
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #fbcfe8; border-radius: 20px; }
+        
+        /* Utilidades para ocultar pantallas */
+        .hidden-screen { opacity: 0; pointer-events: none; position: absolute; z-index: -10; visibility: hidden; transition: all 0.5s ease; }
+        .active-screen { opacity: 1; pointer-events: auto; position: relative; z-index: 10; visibility: visible; transition: all 0.5s ease; }
         .hidden-modal { display: none !important; }
     </style>
 </head>
@@ -107,13 +132,79 @@
     <div class="capa-fondo"></div>
     <div id="contenedor-emojis"></div>
 
-    <main class="max-w-4xl mx-auto p-4 md:p-6 lg:p-8 relative z-10">
+    <!-- PANTALLA DE BLOQUEO / LOGIN -->
+    <div id="authScreen" class="active-screen min-h-screen flex items-center justify-center p-4">
+        <div class="glass-card max-w-md w-full p-8 rounded-[40px] text-center relative overflow-hidden fade-in">
+            <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-pink-300 via-sky-300 to-pink-300"></div>
+            
+            <div class="text-6xl mb-6 animate-pulse-slow">🔐</div>
+            <h1 class="text-3xl font-extrabold text-gray-800 mb-2">El Baúl de Jessica</h1>
+            <p id="authMessage" class="text-gray-500 font-medium mb-8">Tu espacio seguro está cerrado. Ingresa tu llave.</p>
+
+            <!-- Formulario de Login -->
+            <div id="loginForm" class="space-y-4">
+                <input type="password" id="loginPassword" placeholder="Tu contraseña secreta" 
+                    class="w-full p-4 text-center rounded-2xl border-2 border-pink-100 bg-white/80 focus:border-pink-400 outline-none text-lg text-gray-800 font-bold tracking-widest placeholder:tracking-normal placeholder:font-normal">
+                <button id="btnUnlock" class="w-full bg-gradient-to-r from-pink-400 to-pink-500 hover:from-pink-500 hover:to-pink-600 text-white p-4 rounded-2xl text-lg font-bold shadow-lg transition-all transform hover:scale-[1.02]">
+                    Abrir Baúl ✨
+                </button>
+                <button id="btnForgot" class="text-sm text-pink-400 font-bold hover:text-pink-600 mt-4 underline decoration-pink-200">
+                    ¿Olvidaste tu llave?
+                </button>
+            </div>
+
+            <!-- Formulario de Setup Inicial -->
+            <div id="setupForm" class="hidden space-y-4">
+                <p class="text-sm text-pink-600 bg-pink-50 p-3 rounded-xl mb-4 font-bold border border-pink-100">
+                    ¡Bienvenida! Crea una llave para proteger tus recuerdos en todos tus dispositivos.
+                </p>
+                <input type="password" id="setupPassword" placeholder="1. Crea una contraseña (Ej: jessica123)" 
+                    class="w-full p-4 rounded-2xl border-2 border-pink-100 bg-white/80 focus:border-pink-400 outline-none text-gray-800 font-bold">
+                <input type="text" id="setupHint" placeholder="2. Pregunta secreta (Ej: ¿Cuál es mi color favorito?)" 
+                    class="w-full p-4 rounded-2xl border-2 border-sky-100 bg-white/80 focus:border-sky-400 outline-none text-gray-800">
+                <input type="password" id="setupAnswer" placeholder="3. Respuesta secreta (Ej: Rojo)" 
+                    class="w-full p-4 rounded-2xl border-2 border-sky-100 bg-white/80 focus:border-sky-400 outline-none text-gray-800">
+                <button id="btnSetup" class="w-full bg-gradient-to-r from-sky-400 to-sky-500 hover:from-sky-500 hover:to-sky-600 text-white p-4 rounded-2xl text-lg font-bold shadow-lg transition-all mt-2">
+                    Guardar y Entrar 🔒
+                </button>
+            </div>
+
+            <!-- Formulario de Recuperación (Oculto por defecto) -->
+            <div id="recoveryForm" class="hidden space-y-4">
+                <p class="text-sm text-sky-600 bg-sky-50 p-3 rounded-xl mb-4 font-bold border border-sky-100">
+                    Responde tu pregunta secreta para crear una nueva llave.
+                </p>
+                <p id="recoveryQuestionDisplay" class="font-bold text-gray-700 italic mb-2"></p>
+                <input type="text" id="recoveryAnswer" placeholder="Tu respuesta" 
+                    class="w-full p-4 rounded-2xl border-2 border-pink-100 bg-white/80 focus:border-pink-400 outline-none text-gray-800">
+                <input type="password" id="newPassword" placeholder="Nueva contraseña" 
+                    class="w-full p-4 rounded-2xl border-2 border-sky-100 bg-white/80 focus:border-sky-400 outline-none text-gray-800 mt-2">
+                <button id="btnRecover" class="w-full bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-white p-4 rounded-2xl text-lg font-bold shadow-lg transition-all mt-2">
+                    Restaurar Llave 🔑
+                </button>
+                <button id="btnBackToLogin" class="text-sm text-gray-400 font-bold hover:text-gray-600 mt-4">
+                    Volver atrás
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- APLICACIÓN PRINCIPAL (Oculta hasta desbloquear) -->
+    <main id="mainApp" class="hidden-screen max-w-4xl mx-auto p-4 md:p-6 lg:p-8 relative z-10">
+        
+        <!-- Botón de bloqueo manual mejorado -->
+        <div class="flex justify-end mb-4">
+            <button id="btnLock" class="bg-white hover:bg-pink-50 text-gray-700 hover:text-pink-600 px-6 py-3 rounded-2xl shadow-md border-2 border-pink-100 font-extrabold flex items-center gap-2 transition-all transform hover:scale-105 active:scale-95">
+                <span>Cerrar Baúl y Salir</span> 🔒
+            </button>
+        </div>
 
         <!-- Cabecera -->
-        <header class="glass-card rounded-[35px] p-8 mt-4 fade-in">
-            <div class="text-center">
+        <header class="glass-card rounded-[35px] p-6 md:p-8 fade-in relative overflow-hidden">
+            <div class="absolute -top-10 -right-10 text-9xl opacity-10 pointer-events-none">🌸</div>
+            <div class="text-center relative z-10">
                 <div class="text-7xl mb-4 animate-bounce hover:animate-none" style="animation-duration: 3s;">🌷</div>
-                <h1 class="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-sky-500 mb-2">
+                <h1 class="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-sky-500 mb-2 leading-tight">
                     El Espacio de Jessica
                 </h1>
                 <p class="text-gray-500 text-lg md:text-xl font-medium">
@@ -122,27 +213,31 @@
             </div>
 
             <div class="grid md:grid-cols-2 gap-4 mt-8">
-                <div class="bg-pink-50/90 border border-pink-200 rounded-3xl p-5 shadow-sm">
-                    <h2 class="font-bold text-pink-500 flex items-center gap-2 text-lg">
+                <!-- Tarjeta Fecha -->
+                <div class="info-card border-l-4 border-l-pink-400">
+                    <h2 class="font-extrabold text-pink-500 flex items-center gap-2 text-lg">
                         <span>📅</span> Fecha y hora
                     </h2>
                     <p id="fechaActual" class="mt-2 text-gray-700 font-medium"></p>
                 </div>
-                <div class="bg-sky-50/90 border border-sky-200 rounded-3xl p-5 shadow-sm">
-                    <h2 class="font-bold text-sky-500 flex items-center gap-2 text-lg">
+                <!-- Tarjeta Clima -->
+                <div class="info-card border-l-4 border-l-sky-400">
+                    <h2 class="font-extrabold text-sky-500 flex items-center gap-2 text-lg">
                         <span>☁️</span> Clima actual
                     </h2>
-                    <div id="clima" class="mt-2">Cargando clima...</div>
+                    <div id="clima" class="mt-2 min-h-[2rem] flex items-center">
+                        <span class="text-gray-400 text-sm animate-pulse">Consultando el cielo... ✨</span>
+                    </div>
                 </div>
             </div>
 
             <!-- Formulario -->
-            <div class="mt-8 bg-white/70 rounded-3xl p-6 border border-white">
-                <label class="block font-bold text-gray-700 text-lg mb-3">
+            <div class="mt-8 bg-white/90 rounded-3xl p-6 border border-pink-50 shadow-inner">
+                <label class="block font-bold text-gray-800 text-xl mb-4 text-center md:text-left">
                     🌸 ¿Cómo te sientes hoy, Jessica?
                 </label>
                 
-                <select id="emocion" class="w-full p-4 rounded-2xl border-2 border-pink-100 bg-white focus:border-pink-400 outline-none text-lg text-gray-700">
+                <select id="emocion" class="w-full p-4 rounded-2xl border-2 border-pink-100 bg-white focus:border-pink-400 outline-none text-lg text-gray-700 font-medium cursor-pointer transition-colors shadow-sm">
                     <option>😊 Feliz</option>
                     <option>🥰 Amada</option>
                     <option>😌 En paz</option>
@@ -164,17 +259,17 @@
                     <option>🌙 Nostálgica</option>
                 </select>
 
-                <textarea id="texto" class="w-full mt-4 p-4 rounded-2xl border-2 border-pink-100 bg-white focus:border-pink-400 outline-none text-gray-700 text-lg" placeholder="Escribe cómo te sientes hoy... (opcional 💕)"></textarea>
+                <textarea id="texto" class="w-full mt-4 p-5 rounded-2xl border-2 border-pink-100 bg-white focus:border-pink-400 outline-none text-gray-700 text-lg placeholder-gray-400 shadow-sm transition-colors" placeholder="Escribe cómo te sientes hoy... este es tu espacio seguro 💕"></textarea>
 
-                <button id="btnGuardar" class="w-full mt-5 bg-gradient-to-r from-pink-400 to-pink-500 hover:from-pink-500 hover:to-pink-600 text-white p-4 rounded-2xl text-lg font-bold shadow-lg transition-all">
-                    Guardar entrada 🌸
+                <button id="btnGuardar" class="w-full mt-5 bg-gradient-to-r from-pink-400 to-pink-500 hover:from-pink-500 hover:to-pink-600 text-white p-4 rounded-2xl text-xl font-bold shadow-md hover:shadow-lg transition-all transform hover:-translate-y-1">
+                    Guardar en el baúl 🌸
                 </button>
 
                 <div class="grid grid-cols-2 gap-4 mt-5">
-                    <button id="btnWord" class="flex justify-center gap-2 bg-white border-2 border-blue-100 hover:bg-blue-50 text-blue-600 p-3 rounded-2xl font-bold transition-all">
+                    <button id="btnWord" class="flex justify-center items-center gap-2 bg-white border-2 border-blue-100 hover:bg-blue-50 text-blue-600 p-3 rounded-2xl font-bold transition-all shadow-sm">
                         📄 Exportar Word
                     </button>
-                    <button id="btnPDF" class="flex justify-center gap-2 bg-white border-2 border-red-100 hover:bg-red-50 text-red-600 p-3 rounded-2xl font-bold transition-all">
+                    <button id="btnPDF" class="flex justify-center items-center gap-2 bg-white border-2 border-red-100 hover:bg-red-50 text-red-600 p-3 rounded-2xl font-bold transition-all shadow-sm">
                         📕 Exportar PDF
                     </button>
                 </div>
@@ -182,26 +277,29 @@
         </header>
 
         <!-- Recuerdos -->
-        <section class="mt-10 fade-in">
-            <div class="flex items-center gap-3 mb-6 px-2">
-                <h2 class="text-3xl font-extrabold text-gray-700">📖 Recuerdos Guardados</h2>
-                <div class="h-1 flex-grow bg-gradient-to-r from-pink-200 to-transparent rounded-full opacity-50"></div>
+        <section class="mt-12 fade-in pb-20">
+            <div class="flex items-center gap-4 mb-8 px-2">
+                <h2 class="text-3xl font-extrabold text-gray-800 drop-shadow-sm">📖 Recuerdos Guardados</h2>
+                <div class="h-1 flex-grow bg-gradient-to-r from-pink-300 to-transparent rounded-full opacity-70"></div>
             </div>
             
             <div id="lista" class="space-y-6">
-                <div class="text-center p-10 text-gray-500 font-medium">Buscando tus recuerdos... ✨</div>
+                <div class="text-center p-12 glass-card rounded-[30px]">
+                    <span class="text-4xl block mb-4 animate-bounce">✨</span>
+                    <p class="text-gray-500 font-bold text-lg">Abriendo tu baúl de recuerdos...</p>
+                </div>
             </div>
         </section>
     </main>
 
-    <!-- Modal Personalizado -->
-    <div id="customModal" class="fixed inset-0 z-50 hidden-modal items-center justify-center bg-gray-900/40 backdrop-blur-sm p-4">
-        <div class="bg-white rounded-[30px] p-6 md:p-8 max-w-md w-full shadow-2xl border border-pink-100">
-            <h3 id="modalTitle" class="text-2xl font-bold text-gray-800 mb-2">Título</h3>
-            <div id="modalBody" class="mb-6 text-gray-600"></div>
+    <!-- Modal Personalizado (Reemplazo de alert/confirm) -->
+    <div id="customModal" class="fixed inset-0 z-50 hidden-modal items-center justify-center bg-gray-900/40 backdrop-blur-md p-4">
+        <div class="bg-white rounded-[30px] p-6 md:p-8 max-w-md w-full shadow-2xl border border-pink-200 transform transition-all scale-100">
+            <h3 id="modalTitle" class="text-2xl font-extrabold text-gray-800 mb-3 flex items-center gap-2"></h3>
+            <div id="modalBody" class="mb-8 text-gray-600 font-medium leading-relaxed"></div>
             <div class="flex justify-end gap-3">
-                <button id="modalBtnCancel" class="px-5 py-2.5 rounded-xl font-bold text-gray-500 bg-gray-100 hover:bg-gray-200">Cancelar</button>
-                <button id="modalBtnConfirm" class="px-5 py-2.5 rounded-xl font-bold text-white bg-pink-500 hover:bg-pink-600">Aceptar</button>
+                <button id="modalBtnCancel" class="px-5 py-3 rounded-xl font-bold text-gray-500 bg-gray-100 hover:bg-gray-200 transition-colors">Cancelar</button>
+                <button id="modalBtnConfirm" class="px-5 py-3 rounded-xl font-bold text-white bg-gradient-to-r from-pink-400 to-pink-500 hover:from-pink-500 hover:to-pink-600 shadow-md transition-all">Aceptar</button>
             </div>
         </div>
     </div>
@@ -209,9 +307,10 @@
     <!-- Scripts -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc, query, orderBy } 
+        import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc, query, orderBy, getDoc, setDoc } 
         from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
+        // Configuración de Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyDSoz_PY7s67kMI8mULucVBX2bcVwwMTRg",
             authDomain: "el-espacio-de-jessica.firebaseapp.com",
@@ -225,8 +324,21 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // UI Refs
+        // Referencias UI
         const ui = {
+            authScreen: document.getElementById("authScreen"),
+            mainApp: document.getElementById("mainApp"),
+            loginForm: document.getElementById("loginForm"),
+            setupForm: document.getElementById("setupForm"),
+            recoveryForm: document.getElementById("recoveryForm"),
+            authMessage: document.getElementById("authMessage"),
+            loginPassword: document.getElementById("loginPassword"),
+            setupPassword: document.getElementById("setupPassword"),
+            setupHint: document.getElementById("setupHint"),
+            setupAnswer: document.getElementById("setupAnswer"),
+            recoveryQuestionDisplay: document.getElementById("recoveryQuestionDisplay"),
+            recoveryAnswer: document.getElementById("recoveryAnswer"),
+            newPassword: document.getElementById("newPassword"),
             fechaActual: document.getElementById("fechaActual"),
             clima: document.getElementById("clima"),
             emocion: document.getElementById("emocion"),
@@ -235,25 +347,220 @@
             btnGuardar: document.getElementById("btnGuardar"),
             btnWord: document.getElementById("btnWord"),
             btnPDF: document.getElementById("btnPDF"),
+            btnLock: document.getElementById("btnLock"),
             contenedorEmojis: document.getElementById("contenedor-emojis")
         };
 
         let entradasGuardadas = [];
+        let isAppUnlocked = false;
+        let inactivityTimer;
+        let systemConfig = null;
+
+        // --- SISTEMA DE SEGURIDAD PROFESIONAL (EL BAÚL) ---
+        const configRef = doc(db, "sistema", "configuracion_seguridad");
+
+        // Funciones de encriptación básica
+        const encodeString = (str) => btoa(encodeURIComponent(str));
+        const decodeString = (str) => decodeURIComponent(atob(str));
+
+        // 1. Inicialización de la seguridad
+        async function initSecurity() {
+            try {
+                const snap = await getDoc(configRef);
+                if (snap.exists()) {
+                    systemConfig = snap.data();
+                    
+                    // Mostrar pantalla de login normal
+                    ui.loginForm.classList.remove("hidden");
+                    ui.setupForm.classList.add("hidden");
+                    ui.recoveryForm.classList.add("hidden");
+                    ui.authMessage.innerText = "Tu espacio seguro está cerrado. Ingresa tu llave.";
+
+                    // Recordar sesión temporal: Si recarga la página, no le pedimos la clave de inmediato
+                    if (sessionStorage.getItem("jessica_sesion_activa") === "true") {
+                        unlockApp(false); // Desbloqueo silencioso
+                    }
+                } else {
+                    // Modo Configuración Inicial (Primera vez)
+                    ui.authMessage.innerText = "¡Bienvenida! Crea tu llave maestra por primera vez.";
+                    ui.loginForm.classList.add("hidden");
+                    ui.setupForm.classList.remove("hidden");
+                    ui.recoveryForm.classList.add("hidden");
+                }
+            } catch (error) {
+                console.error("Error cargando seguridad:", error);
+                showModal({ title: "⚠️ Error", content: "No pudimos conectar con la base de datos de seguridad."});
+            }
+        }
+
+        // 2. Función de Bloqueo
+        function lockApp(mostrarMensaje = false) {
+            isAppUnlocked = false;
+            sessionStorage.removeItem("jessica_sesion_activa"); // Limpiar sesión
+            clearTimeout(inactivityTimer);
+            
+            // Detener la descarga de datos de Firebase por privacidad
+            if (unsubscribe) {
+                unsubscribe(); 
+                unsubscribe = null;
+            }
+
+            // Cambiar a pantalla de bloqueo
+            ui.mainApp.classList.remove("active-screen");
+            ui.mainApp.classList.add("hidden-screen");
+            ui.authScreen.classList.remove("hidden-screen");
+            ui.authScreen.classList.add("active-screen");
+            
+            // Resetear formularios
+            ui.loginPassword.value = "";
+            ui.recoveryAnswer.value = "";
+            ui.newPassword.value = "";
+            ui.loginForm.classList.remove("hidden");
+            ui.recoveryForm.classList.add("hidden");
+            ui.authMessage.innerText = "Tu espacio seguro está cerrado. Ingresa tu llave.";
+
+            if (mostrarMensaje) {
+                showModal({ title: "🔒 Baúl Cerrado", content: "Por tu privacidad, el baúl se ha cerrado automáticamente por inactividad."});
+            }
+        }
+
+        // 3. Función de Desbloqueo
+        function unlockApp(mostrarMensaje = true) {
+            isAppUnlocked = true;
+            sessionStorage.setItem("jessica_sesion_activa", "true"); // Guardar sesión temporal
+            
+            ui.authScreen.classList.remove("active-screen");
+            ui.authScreen.classList.add("hidden-screen");
+            ui.mainApp.classList.remove("hidden-screen");
+            ui.mainApp.classList.add("active-screen");
+            
+            resetInactivityTimer();
+            iniciarEscuchaDatos(); // Cargar los recuerdos solo al entrar
+        }
+
+        // 4. Temporizador de Inactividad (5 minutos)
+        function resetInactivityTimer() {
+            if (!isAppUnlocked) return;
+            clearTimeout(inactivityTimer);
+            // 5 minutos = 300,000 milisegundos
+            inactivityTimer = setTimeout(() => {
+                lockApp(true);
+            }, 300000); 
+        }
+
+        // Detectar actividad para reiniciar el temporizador
+        ['mousemove', 'keydown', 'scroll', 'touchstart', 'click'].forEach(evt => {
+            window.addEventListener(evt, resetInactivityTimer);
+        });
+
+        // Evento: Botón de bloqueo manual
+        ui.btnLock.onclick = () => lockApp(false);
+
+        // Evento: Intentar Iniciar Sesión
+        document.getElementById("btnUnlock").onclick = () => {
+            if (!systemConfig) return;
+            const inputPwd = encodeString(ui.loginPassword.value.trim());
+            if (inputPwd === systemConfig.pwd) {
+                unlockApp(true);
+            } else {
+                showModal({ title: "❌ Llave incorrecta", content: "La contraseña no es correcta. Intenta nuevamente." });
+                ui.loginPassword.value = "";
+            }
+        };
+
+        // Evento: Iniciar sesión presionando Enter
+        ui.loginPassword.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                document.getElementById("btnUnlock").click();
+            }
+        });
+
+        // Evento: Guardar Configuración Inicial
+        document.getElementById("btnSetup").onclick = async () => {
+            const pwd = ui.setupPassword.value.trim();
+            const hint = ui.setupHint.value.trim();
+            const ans = ui.setupAnswer.value.trim().toLowerCase();
+
+            if (!pwd || !hint || !ans) {
+                return showModal({ title: "Faltan datos", content: "Por favor, completa los 3 campos para asegurar tu baúl." });
+            }
+
+            try {
+                const newData = {
+                    pwd: encodeString(pwd),
+                    hint: hint,
+                    ans: encodeString(ans)
+                };
+                await setDoc(configRef, newData);
+                systemConfig = newData;
+                showModal({ title: "✅ Baúl Asegurado", content: "Tu contraseña y pregunta de seguridad se han guardado con éxito." });
+                unlockApp(true);
+            } catch (error) {
+                showModal({ title: "Error", content: "Hubo un problema guardando tu configuración en Firebase." });
+            }
+        };
+
+        // Evento: Abrir panel de Recuperación
+        document.getElementById("btnForgot").onclick = () => {
+            if (!systemConfig) return;
+            ui.loginForm.classList.add("hidden");
+            ui.recoveryForm.classList.remove("hidden");
+            ui.authMessage.innerText = "Tranquila, vamos a recuperar tu acceso.";
+            ui.recoveryQuestionDisplay.innerText = `Pregunta: ${systemConfig.hint}`;
+        };
+
+        // Evento: Cancelar Recuperación y volver al Login
+        document.getElementById("btnBackToLogin").onclick = () => {
+            ui.recoveryForm.classList.add("hidden");
+            ui.loginForm.classList.remove("hidden");
+            ui.authMessage.innerText = "Tu espacio seguro está cerrado. Ingresa tu llave.";
+            ui.recoveryAnswer.value = "";
+            ui.newPassword.value = "";
+        };
+
+        // Evento: Ejecutar Recuperación de Contraseña
+        document.getElementById("btnRecover").onclick = async () => {
+            const ansInput = encodeString(ui.recoveryAnswer.value.trim().toLowerCase());
+            const newPwd = ui.newPassword.value.trim();
+
+            if (!ui.recoveryAnswer.value.trim() || !newPwd) {
+                return showModal({ title: "Faltan datos", content: "Por favor, ingresa la respuesta y una contraseña nueva." });
+            }
+
+            if (ansInput === systemConfig.ans) {
+                try {
+                    systemConfig.pwd = encodeString(newPwd);
+                    await updateDoc(configRef, { pwd: systemConfig.pwd });
+                    showModal({ title: "✅ Llave restaurada", content: "¡Listo! Tu nueva contraseña ha sido guardada." });
+                    
+                    // Volver al login normal automáticamente
+                    ui.recoveryForm.classList.add("hidden");
+                    ui.loginForm.classList.remove("hidden");
+                    ui.authMessage.innerText = "Tu espacio seguro está cerrado. Ingresa tu llave.";
+                    ui.loginPassword.value = newPwd; // Autocompletar por comodidad
+                    ui.recoveryAnswer.value = "";
+                    ui.newPassword.value = "";
+                } catch (error) {
+                    showModal({ title: "Error", content: "No se pudo actualizar la contraseña." });
+                }
+            } else {
+                showModal({ title: "❌ Respuesta incorrecta", content: "Esa no es la respuesta secreta que guardaste." });
+            }
+        };
 
         // Generar Flores y Animalitos
         function generarFondo() {
-            // Emojis de flores, destellos y animalitos lindos
-            const emojis = ["🌸", "✨", "🦋", "💖", "🌷", "🤍", "⭐", "🍓", "☁️", "🐰", "🐱", "🐶", "🐼", "🦊", "🐻"];
+            const emojis = ["🌸", "✨", "🦋", "💖", "🌷", "🤍", "⭐", "☁️", "🐰", "🐱", "🐶", "🦊", "🐻"];
             const fragment = document.createDocumentFragment();
             
-            // Aumenté a 50 para que se vea más vivo
-            for (let i = 0; i < 50; i++) {
+            for (let i = 0; i < 40; i++) {
                 const span = document.createElement("span");
-                span.className = "flotante";
+                span.className = "flotante select-none";
                 span.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
                 span.style.left = `${Math.random() * 100}vw`;
-                span.style.animationDuration = `${12 + Math.random() * 25}s`;
-                span.style.fontSize = `${18 + Math.random() * 26}px`;
+                span.style.animationDuration = `${15 + Math.random() * 25}s`;
+                span.style.fontSize = `${14 + Math.random() * 24}px`;
                 span.style.animationDelay = `-${Math.random() * 20}s`;
                 fragment.appendChild(span);
             }
@@ -266,23 +573,47 @@
             const ahora = new Date();
             const fechaStr = ahora.toLocaleDateString("es-ES", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
             const horaStr = ahora.toLocaleTimeString("es-ES", { hour: '2-digit', minute: '2-digit' });
-            ui.fechaActual.innerHTML = `<span class="text-gray-700">${fechaStr.charAt(0).toUpperCase() + fechaStr.slice(1)}</span> <br> <span class="text-pink-500 font-bold text-xl">${horaStr}</span>`;
+            ui.fechaActual.innerHTML = `<span class="text-gray-800 font-bold block mb-1">${fechaStr.charAt(0).toUpperCase() + fechaStr.slice(1)}</span> <span class="bg-pink-100 text-pink-600 px-3 py-1 rounded-lg font-extrabold text-xl inline-block">${horaStr}</span>`;
         }
         setInterval(actualizarFecha, 1000);
         actualizarFecha();
 
-        // Clima
+        // Clima blindado y ultra-fiable (Open-Meteo)
         async function cargarClima() {
             try {
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 5000);
-                const respuesta = await fetch("https://wttr.in/?format=%c+%t+-+%C", { signal: controller.signal });
+                const timeoutId = setTimeout(() => controller.abort(), 8000);
+                
+                // 1. Obtener ubicación por IP silenciosamente (sin pedir permisos de navegador)
+                const geoRes = await fetch("https://get.geojs.io/v1/ip/geo.json", { signal: controller.signal });
+                if (!geoRes.ok) throw new Error("Error de red al obtener ubicación");
+                const geoData = await geoRes.json();
+                
+                // 2. Obtener clima exacto con Open-Meteo (API limpia en formato JSON)
+                const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${geoData.latitude}&longitude=${geoData.longitude}&current_weather=true`, { signal: controller.signal });
                 clearTimeout(timeoutId);
-                if(!respuesta.ok) throw new Error("Error");
-                const texto = await respuesta.text();
-                ui.clima.innerHTML = `<span class="inline-block bg-white px-3 py-1 rounded-full text-sky-700 font-bold border border-sky-100 shadow-sm">${texto.trim()}</span>`;
+                
+                if (!weatherRes.ok) throw new Error("Error al obtener clima");
+                const weatherData = await weatherRes.json();
+                
+                const temp = Math.round(weatherData.current_weather.temperature);
+                const code = weatherData.current_weather.weathercode;
+                
+                // 3. Traducir los códigos meteorológicos a Emojis bonitos para Jessica
+                let emoji = "☁️";
+                if (code === 0) emoji = "☀️"; // Despejado
+                else if (code === 1 || code === 2) emoji = "⛅"; // Parcialmente nublado
+                else if (code === 3) emoji = "☁️"; // Nublado
+                else if (code >= 45 && code <= 48) emoji = "🌫️"; // Niebla
+                else if (code >= 51 && code <= 67) emoji = "🌧️"; // Lluvia
+                else if (code >= 71 && code <= 77) emoji = "❄️"; // Nieve
+                else if (code >= 80 && code <= 82) emoji = "🌦️"; // Chubascos
+                else if (code >= 95) emoji = "🌩️"; // Tormenta
+
+                ui.clima.innerHTML = `<span class="inline-block bg-sky-50 px-4 py-2 rounded-xl text-sky-800 font-extrabold border border-sky-100 shadow-sm text-lg">${emoji} ${temp}°C</span>`;
             } catch (error) {
-                ui.clima.innerHTML = `<span class="text-gray-500 font-bold">No disponible 🌥️</span>`;
+                console.error("Error al cargar clima:", error);
+                ui.clima.innerHTML = `<span class="inline-block bg-gray-50 px-4 py-2 rounded-xl text-gray-500 font-bold border border-gray-200 shadow-sm">No disponible 🌥️</span>`;
             }
         }
         cargarClima();
@@ -290,21 +621,41 @@
         // Modal
         let modalCallback = null;
         function showModal({ title, content, isPrompt, defaultValue }) {
-            document.getElementById("modalTitle").innerText = title;
+            const modalIcon = title.includes("Error") || title.includes("❌") ? "⚠️" : (title.includes("✅") ? "✨" : "🌸");
+            document.getElementById("modalTitle").innerHTML = `<span>${modalIcon}</span> <span>${title}</span>`;
             const modalBody = document.getElementById("modalBody");
+            
             if (isPrompt) {
-                modalBody.innerHTML = `<textarea id="modalInputText" class="w-full mt-2 p-4 rounded-xl border-2 border-pink-100 focus:border-pink-400 outline-none h-40">${defaultValue || ''}</textarea>`;
+                modalBody.innerHTML = `<textarea id="modalInputText" class="w-full mt-2 p-4 rounded-xl border-2 border-pink-200 bg-pink-50/50 focus:border-pink-500 outline-none h-40 text-gray-800 font-medium resize-none">${defaultValue || ''}</textarea>`;
+                setTimeout(() => document.getElementById("modalInputText").focus(), 100);
             } else {
-                modalBody.innerHTML = `<p class="text-lg">${content}</p>`;
+                modalBody.innerHTML = `<p class="text-lg text-gray-700">${content}</p>`;
             }
-            document.getElementById("customModal").classList.remove("hidden-modal");
-            document.getElementById("customModal").classList.add("flex");
+            
+            const modal = document.getElementById("customModal");
+            modal.classList.remove("hidden-modal");
+            modal.classList.add("flex");
+            
+            // Animación de entrada
+            const modalContent = modal.querySelector('div');
+            modalContent.classList.remove('scale-95', 'opacity-0');
+            modalContent.classList.add('scale-100', 'opacity-100');
+
             return new Promise(resolve => { modalCallback = resolve; });
         }
 
         function closeModal() {
-            document.getElementById("customModal").classList.add("hidden-modal");
-            document.getElementById("customModal").classList.remove("flex");
+            const modal = document.getElementById("customModal");
+            const modalContent = modal.querySelector('div');
+            
+            // Animación de salida
+            modalContent.classList.remove('scale-100', 'opacity-100');
+            modalContent.classList.add('scale-95', 'opacity-0');
+            
+            setTimeout(() => {
+                modal.classList.add("hidden-modal");
+                modal.classList.remove("flex");
+            }, 200);
         }
 
         document.getElementById("modalBtnCancel").onclick = () => { if(modalCallback) modalCallback(null); closeModal(); };
@@ -318,73 +669,83 @@
         ui.btnGuardar.onclick = async () => {
             const btn = ui.btnGuardar;
             const originalText = btn.innerHTML;
-            btn.innerHTML = "Guardando... ✨"; btn.disabled = true;
+            btn.innerHTML = "Guardando en el baúl... ✨"; 
+            btn.disabled = true;
 
             try {
                 await addDoc(collection(db, "entradas"), {
                     emocion: ui.emocion.value,
                     texto: ui.texto.value.trim(),
-                    fecha: new Date().toLocaleString("es-ES", { dateStyle: 'medium', timeStyle: 'short' }),
+                    fecha: new Date().toLocaleString("es-ES", { dateStyle: 'long', timeStyle: 'short' }),
                     timestamp: Date.now()
                 });
                 ui.texto.value = "";
-                btn.innerHTML = "¡Guardado! 💖";
+                btn.innerHTML = "¡Guardado seguro! 💖";
+                btn.classList.replace("from-pink-400", "from-green-400");
+                btn.classList.replace("to-pink-500", "to-green-500");
             } catch (error) {
-                showModal({ title: "Error", content: "No pudimos guardar. Revisa las reglas de Firebase." });
+                console.error(error);
+                showModal({ title: "Error", content: "No pudimos guardar. Revisa tu conexión." });
             }
-            setTimeout(() => { btn.innerHTML = originalText; btn.disabled = false; }, 2000);
+            
+            setTimeout(() => { 
+                btn.innerHTML = originalText; 
+                btn.disabled = false; 
+                btn.classList.replace("from-green-400", "from-pink-400");
+                btn.classList.replace("to-green-500", "to-pink-500");
+            }, 3000);
         };
 
-        // Firebase Leer
-        const q = query(collection(db, "entradas"), orderBy("timestamp", "desc"));
-        onSnapshot(q, (snapshot) => {
-            ui.lista.innerHTML = "";
-            entradasGuardadas = [];
-            
-            if (snapshot.empty) {
-                ui.lista.innerHTML = `<div class="text-center p-10 bg-white/60 rounded-3xl border border-pink-200 shadow-sm"><span class="text-4xl block mb-3">🌱</span><p class="text-gray-600 font-bold">Aún no hay recuerdos guardados.</p></div>`;
-                return;
-            }
+        // Firebase Leer (Se llama al desbloquear)
+        let unsubscribe = null;
+        function iniciarEscuchaDatos() {
+            if (unsubscribe) unsubscribe(); // Evitar multiples listeners
 
-            snapshot.forEach((docu) => {
-                const data = docu.data();
-                entradasGuardadas.push({ id: docu.id, ...data });
-                const card = document.createElement("article");
-                card.className = "glass-card rounded-[30px] p-6 fade-in border-l-4 border-l-pink-400";
+            const q = query(collection(db, "entradas"), orderBy("timestamp", "desc"));
+            unsubscribe = onSnapshot(q, (snapshot) => {
+                ui.lista.innerHTML = "";
+                entradasGuardadas = [];
                 
-                const textoSeguro = data.texto ? data.texto.replace(/</g, "&lt;").replace(/>/g, "&gt;") : "💭 Jessica solamente quiso guardar esta emoción.";
-                
-                card.innerHTML = `
-                    <div class="flex justify-between items-start gap-3 flex-wrap sm:flex-nowrap">
-                        <div>
-                            <h2 class="text-2xl font-bold text-gray-800">${data.emocion}</h2>
-                            <p class="text-gray-500 text-sm mt-1 font-bold">🕒 ${data.fecha || 'Fecha desconocida'}</p>
+                if (snapshot.empty) {
+                    ui.lista.innerHTML = `<div class="text-center p-12 glass-card rounded-[30px] border border-pink-100 shadow-sm transform transition hover:scale-[1.01]"><span class="text-6xl block mb-4">🌱</span><p class="text-gray-600 font-extrabold text-xl">Tu baúl está vacío.</p><p class="text-gray-400 mt-2">Empieza a escribir cómo te sientes hoy.</p></div>`;
+                    return;
+                }
+
+                snapshot.forEach((docu) => {
+                    const data = docu.data();
+                    entradasGuardadas.push({ id: docu.id, ...data });
+                    const card = document.createElement("article");
+                    card.className = "glass-card rounded-[30px] p-6 md:p-8 fade-in border-l-[6px] border-l-pink-400 relative group overflow-hidden";
+                    
+                    const textoSeguro = data.texto ? data.texto.replace(/</g, "&lt;").replace(/>/g, "&gt;") : "💭 *Jessica prefirió guardar solo su emoción este día.*";
+                    
+                    card.innerHTML = `
+                        <div class="flex justify-between items-start gap-4 flex-col sm:flex-row">
+                            <div>
+                                <h2 class="text-2xl md:text-3xl font-extrabold text-gray-800">${data.emocion}</h2>
+                                <p class="text-pink-500 text-sm mt-2 font-bold bg-pink-50 inline-block px-3 py-1 rounded-lg border border-pink-100">🕒 ${data.fecha || 'Fecha desconocida'}</p>
+                            </div>
+                            <div class="flex gap-2 w-full sm:w-auto opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300">
+                                <button data-action="edit" data-id="${docu.id}" class="flex-1 sm:flex-none bg-amber-50 hover:bg-amber-100 text-amber-600 border border-amber-200 px-4 py-2.5 rounded-xl font-bold text-sm transition-colors shadow-sm">Editar ✏️</button>
+                                <button data-action="delete" data-id="${docu.id}" class="flex-1 sm:flex-none bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 px-4 py-2.5 rounded-xl font-bold text-sm transition-colors shadow-sm">Borrar 🗑️</button>
+                            </div>
                         </div>
-                        <div class="flex gap-2">
-                            <button data-action="edit" data-id="${docu.id}" class="bg-amber-100 hover:bg-amber-200 text-amber-700 px-4 py-2 rounded-xl font-bold text-sm transition-colors">Editar ✏️</button>
-                            <button data-action="delete" data-id="${docu.id}" class="bg-red-100 hover:bg-red-200 text-red-700 px-4 py-2 rounded-xl font-bold text-sm transition-colors">Borrar 🗑️</button>
+                        <div class="mt-6 bg-white/70 rounded-2xl p-6 text-gray-800 whitespace-pre-wrap leading-relaxed shadow-inner font-medium border border-gray-100 text-lg">
+                            ${textoSeguro}
                         </div>
-                    </div>
-                    <div class="mt-5 bg-white rounded-2xl p-5 text-gray-700 whitespace-pre-wrap leading-relaxed shadow-sm font-medium border border-gray-100">
-                        ${textoSeguro}
+                    `;
+                    ui.lista.appendChild(card);
+                });
+            }, (error) => {
+                ui.lista.innerHTML = `
+                    <div class="bg-red-50 border-2 border-red-200 rounded-[30px] p-8 text-center shadow-lg">
+                        <span class="text-6xl block mb-4">🔒</span>
+                        <h3 class="text-2xl font-extrabold text-red-600 mb-2">Acceso Denegado</h3>
+                        <p class="text-red-500 font-bold mb-4">No pudimos conectar con la base de datos de Firebase.</p>
                     </div>
                 `;
-                ui.lista.appendChild(card);
             });
-        }, (error) => {
-            // MENSAJE DE ERROR DE BASE DE DATOS
-            ui.lista.innerHTML = `
-                <div class="bg-red-50 border-2 border-red-200 rounded-3xl p-6 text-center shadow-lg">
-                    <span class="text-5xl block mb-3">🔒</span>
-                    <h3 class="text-xl font-bold text-red-600 mb-2">Base de datos bloqueada</h3>
-                    <p class="text-red-500 font-medium mb-4">Firebase está bloqueando el acceso por seguridad.</p>
-                    <div class="bg-white p-4 rounded-xl inline-block text-left text-sm text-gray-600 border border-red-100">
-                        Ve a tu <b>Consola de Firebase > Firestore Database > Rules</b> y cambia las reglas a:<br><br>
-                        <code class="bg-gray-100 p-2 rounded block text-red-500 font-mono">allow read, write: if true;</code>
-                    </div>
-                </div>
-            `;
-        });
+        }
 
         // Editar / Borrar
         ui.lista.addEventListener("click", async (e) => {
@@ -395,7 +756,7 @@
             const entrada = entradasGuardadas.find(ent => ent.id === id);
 
             if (action === "delete") {
-                const confirmar = await showModal({ title: "Eliminar recuerdo", content: "¿Borrar este recuerdo? Esta acción no se puede deshacer." });
+                const confirmar = await showModal({ title: "Eliminar recuerdo", content: "¿Estás segura de que quieres borrar esto? Se perderá para siempre." });
                 if (confirmar) await deleteDoc(doc(db, "entradas", id));
             } else if (action === "edit") {
                 const nuevoTexto = await showModal({ title: "Editar recuerdo", isPrompt: true, defaultValue: entrada.texto });
@@ -405,32 +766,68 @@
 
         // Exportar Word
         ui.btnWord.onclick = () => {
-            if (!entradasGuardadas.length) return showModal({ title: "Aviso", content: "No hay entradas para exportar." });
-            let contenido = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><style>body{font-family:'Arial';color:#333}h1{color:#ec4899;text-align:center}.entrada{margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid #fce7f3}h2{color:#db2777;font-size:14pt}.fecha{color:#9ca3af;font-size:10pt}.texto{background-color:#fdf2f8;padding:15px;border-radius:10px}</style></head><body><h1>El Espacio de Jessica 🌸</h1>`;
+            if (!entradasGuardadas.length) return showModal({ title: "Baúl vacío", content: "Aún no hay recuerdos para exportar." });
+            let contenido = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><style>body{font-family:'Nunito', 'Arial', sans-serif;color:#374151}h1{color:#ec4899;text-align:center;font-size:24pt;margin-bottom:30px}.entrada{margin-bottom:25px;padding-bottom:25px;border-bottom:2px dashed #fce7f3}h2{color:#db2777;font-size:16pt;margin-bottom:5px}.fecha{color:#9ca3af;font-size:11pt;font-style:italic;margin-bottom:15px}.texto{background-color:#fdf2f8;padding:20px;border-radius:15px;line-height:1.6;font-size:12pt;border:1px solid #fbcfe8}</style></head><body><h1>El Baúl de Jessica 🌸</h1>`;
             entradasGuardadas.forEach(ent => {
-                contenido += `<div class="entrada"><h2>${ent.emocion}</h2><p class="fecha">🕒 ${ent.fecha}</p><div class="texto">${ent.texto ? ent.texto.replace(/\n/g, '<br>') : ''}</div></div>`;
+                contenido += `<div class="entrada"><h2>${ent.emocion}</h2><p class="fecha">🕒 ${ent.fecha}</p><div class="texto">${ent.texto ? ent.texto.replace(/\n/g, '<br>') : 'Solo emoción guardada.'}</div></div>`;
             });
             const blob = new Blob(['\ufeff', contenido += `</body></html>`], { type: 'application/msword' });
-            const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "Diario_Jessica.doc"; a.click();
+            const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "El_Baul_De_Jessica.doc"; a.click();
         };
 
         // Exportar PDF
         ui.btnPDF.onclick = () => {
-            if (!entradasGuardadas.length) return showModal({ title: "Aviso", content: "No hay entradas para exportar." });
+            if (!entradasGuardadas.length) return showModal({ title: "Baúl vacío", content: "Aún no hay recuerdos para exportar." });
             const docPDF = new window.jspdf.jsPDF();
-            let y = 20; docPDF.setFontSize(22); docPDF.setTextColor(236, 72, 153); docPDF.text("El Espacio de Jessica", 105, y, { align: "center" }); y += 15;
-            docPDF.setFontSize(11);
+            let y = 20; 
+            
+            docPDF.setFontSize(24); 
+            docPDF.setTextColor(236, 72, 153); 
+            docPDF.text("El Baúl de Jessica", 105, y, { align: "center" }); 
+            y += 20;
+            
             entradasGuardadas.forEach(ent => {
-                docPDF.setTextColor(219, 39, 119); docPDF.setFont("helvetica", "bold"); docPDF.text(ent.emocion, 20, y); y += 6;
-                docPDF.setTextColor(156, 163, 175); docPDF.setFont("helvetica", "normal"); docPDF.text(`Fecha: ${ent.fecha}`, 20, y); y += 8;
+                docPDF.setFontSize(14);
+                docPDF.setTextColor(219, 39, 119); 
+                docPDF.setFont("helvetica", "bold"); 
+                docPDF.text(ent.emocion, 20, y); 
+                y += 7;
+                
+                docPDF.setFontSize(10);
+                docPDF.setTextColor(156, 163, 175); 
+                docPDF.setFont("helvetica", "italic"); 
+                docPDF.text(`🕒 ${ent.fecha}`, 20, y); 
+                y += 10;
+                
+                docPDF.setFontSize(12);
                 docPDF.setTextColor(55, 65, 81);
-                const splitText = docPDF.splitTextToSize(ent.texto || "Solo emoción.", 170);
-                if (y + (splitText.length * 6) > 280) { docPDF.addPage(); y = 20; }
-                docPDF.text(splitText, 20, y); y += (splitText.length * 6) + 15;
-                if (y > 280) { docPDF.addPage(); y = 20; }
+                docPDF.setFont("helvetica", "normal");
+                const splitText = docPDF.splitTextToSize(ent.texto || "Solo emoción guardada.", 170);
+                
+                // Comprobar si cabe en la página
+                if (y + (splitText.length * 7) > 280) { 
+                    docPDF.addPage(); 
+                    y = 20; 
+                }
+                
+                docPDF.text(splitText, 20, y); 
+                y += (splitText.length * 7) + 15;
+                
+                // Línea separadora
+                docPDF.setDrawColor(252, 231, 243); // pink-100
+                docPDF.line(20, y-7, 190, y-7);
+
+                if (y > 270) { 
+                    docPDF.addPage(); 
+                    y = 20; 
+                }
             });
-            docPDF.save("Diario_Jessica.pdf");
+            docPDF.save("El_Baul_De_Jessica.pdf");
         };
+
+        // Iniciar App
+        initSecurity();
+
     </script>
 </body>
 </html>
